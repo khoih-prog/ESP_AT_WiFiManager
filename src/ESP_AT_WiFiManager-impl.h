@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
- * ESP_AT_WiFiManager.cpp
+ * ESP_AT_WiFiManager-impl.h
  * WiFi/Credentials Manager for Teensy, SAM DUE, SAMD, STM32, etc. boards running `ESP8266 AT-command` shields
  *
  * ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, STM32, etc. boards running `ESP8266 AT-command` shields
