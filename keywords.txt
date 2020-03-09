@@ -1,0 +1,87 @@
+##########################################
+# Syntax Coloring Map For ESP_WifiManager
+##########################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ESP_AT_WiFiManager	KEYWORD1
+ESP_AT_WMParameter KEYWORD1
+ESP_AT_WM_Configuration KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+getID KEYWORD2
+getValue KEYWORD2
+getPlaceholder KEYWORD2
+getValueLength KEYWORD2
+getLabelPlacement KEYWORD2
+getCustomHTML KEYWORD2
+autoConnect	KEYWORD2
+startConfigPortal KEYWORD2
+getConfigPortalSSID KEYWORD2
+getConfigPortalPW KEYWORD2
+resetSettings	KEYWORD2
+setConfigPortalTimeout	KEYWORD2
+setTimeout  KEYWORD2
+setConnectTimeout KEYWORD2
+setDebugOutput	KEYWORD2
+setMinimumSignalQuality KEYWORD2
+setAPStaticIPConfig	KEYWORD2
+setSTAStaticIPConfig KEYWORD2
+setAPCallback	KEYWORD2
+setSaveConfigCallback KEYWORD2
+addParameter KEYWORD2
+setBreakAfterConfig KEYWORD2
+setCustomHeadElement  KEYWORD2
+setRemoveDuplicateAPs KEYWORD2
+scanWifiNetworks  KEYWORD2
+getSSID	KEYWORD2
+getPW	KEYWORD2
+getParameters KEYWORD2
+getParametersCount  KEYWORD2
+getStatus KEYWORD2
+WiFi_SSID KEYWORD2
+WiFi_Pass KEYWORD2
+IPAddressToString	KEYWORD2
+resetBoard KEYWORD2
+setAPChannel  KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+#	LITERAL1
+
+WFM_LABEL_BEFORE  LITERAL1
+WFM_LABEL_AFTER LITERAL1
+WFM_NO_LABEL  LITERAL1
+HTTP_200  LITERAL1
+HTTP_HEAD_START LITERAL1
+HTTP_STYLE  LITERAL1
+HTTP_SCRIPT LITERAL1
+HTTP_HEAD_END LITERAL1
+HTTP_PORTAL_OPTIONS LITERAL1
+HTTP_ITEM LITERAL1
+JSON_ITEM LITERAL1
+HTTP_FORM_START LITERAL1
+HTTP_FORM_LABEL LITERAL1
+HTTP_FORM_PARAM LITERAL1
+HTTP_FORM_END LITERAL1
+HTTP_SAVED  LITERAL1
+HTTP_END  LITERAL1
+HTTP_HEAD_CL  LITERAL1
+HTTP_HEAD_CT  LITERAL1
+HTTP_HEAD_CT2 LITERAL1
+HTTP_HEAD_CORS  LITERAL1
+HTTP_HEAD_CORS_ALLOW_ALL  LITERAL1
+HTTP_HEAD_CC  LITERAL1
+HTTP_HEAD_NCNSMR  LITERAL1
+HTTP_HEAD_PRAGMA  LITERAL1
+HTTP_HEAD_NOCACHE LITERAL1
+HTTP_HEAD_EXPIRE  LITERAL1
+HTTP_HEAD_M_ONE LITERAL1
+

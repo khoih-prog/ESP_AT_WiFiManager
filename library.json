@@ -1,0 +1,13 @@
+{
+  "name": "ESP_AT_WiFiManager",
+  "keywords": "wifi, wi-fi, ESP8266, AT, shield, Teensy, SAM DUE, SAMD, STM32, Credentials, Manager",
+  "description": "WiFi/Credentials Manager for Teensy, SAM DUE, SAMD, STM32, etc. boards running ESP8266 AT-command shields with fallback web configuration portal",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/khoih-prog/ESP_AT_WiFiManager"
+  },
+  "frameworks": "arduino",
+  "platforms": "espressif",
+  "version": "1.0.0"
+}
