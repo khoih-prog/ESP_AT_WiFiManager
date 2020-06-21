@@ -1,13 +1,28 @@
 {
   "name": "ESP_AT_WiFiManager",
-  "keywords": "wifi, wi-fi, ESP8266, AT, shield, Teensy, SAM DUE, SAMD, STM32, Credentials, Manager",
-  "description": "WiFi/Credentials Manager for Teensy, SAM DUE, SAMD, STM32, etc. boards running ESP8266 AT-command shields with fallback web configuration portal",
+  "version": "1.0.1",
+  "keywords": "wifi, ESP8266, ESP32, AT, shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32, Credentials, Manager, EEPROM, FlashStorage, DueFlashStorage, LittleFS",
+  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32, etc. boards running ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, SAMD FlashStorage, DueFlashStorage of nRF52 LittleFS.",
+  "authors":
+  {
+    "name":  "Khoi Hoang",
+    "url":   "https://github.com/khoih-prog",
+    "maintainer": true
+  },
   "repository":
   {
     "type": "git",
     "url": "https://github.com/khoih-prog/ESP_AT_WiFiManager"
   },
-  "frameworks": "arduino",
-  "platforms": "espressif",
-  "version": "1.0.0"
+  "homepage": "https://github.com/khoih-prog/ESP_AT_WiFiManager",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },  
+  "frameworks": "*",
+  "platforms": "*",
+  "examples": "examples/*/*/*.ino"
 }

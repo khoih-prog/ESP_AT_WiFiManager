@@ -1,64 +1,79 @@
 /****************************************************************************************************************************
- * ESP_AT_WiFiManager.h
- * WiFi/Credentials Manager for Teensy, SAM DUE, SAMD, STM32, etc. boards running `ESP8266 AT-command` shields
- *
- * ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, STM32, etc. boards running `ESP8266 AT-command` shields
- * (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
- * inspired by:
- * http://www.esp8266.com/viewtopic.php?f=29&t=2520
- * https://github.com/chriscook8/esp-arduino-apboot
- * https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
- *
- * Forked from Tzapu https://github.com/tzapu/WiFiManager
- * and from Ken Taylor https://github.com/kentaylor
- *
- * Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
- * Licensed under MIT license
- * Version: 1.0.0
- *
- * Version Modified By   Date      Comments
- * ------- -----------  ---------- -----------
- *  1.0.0   K Hoang      08/03/2020 Initial coding
+   ESP_AT_WiFiManager.h
+   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
+
+   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
+   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
+   
+   Inspired by:
+   http://www.esp8266.com/viewtopic.php?f=29&t=2520
+   https://github.com/chriscook8/esp-arduino-apboot
+   https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
+
+   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
+   and from Ken Taylor https://github.com/kentaylor
+
+   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
+   Licensed under MIT license
+   Version: 1.0.1
+
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
+    1.0.0   K Hoang      08/03/2020 Initial coding
+    1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B30_ublox, etc.
  *****************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_h
 #define ESP_AT_WiFiManager_h
 
 #if !defined(DEBUG_WIFIMGR)
-#define DEBUG_WIFIMGR			false
+  #define DEBUG_WIFIMGR      false
 #endif
 
 #if !defined(ESP_AT_DEBUG_OUTPUT)
-#define ESP_AT_DEBUG_OUTPUT Serial
+  #define ESP_AT_DEBUG_OUTPUT Serial
 #endif
 
 #define USE_STATIC_WEBSERVER    true
 
+#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
+      defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
+  #if defined(ESP8266_AT_USE_NRF528XX)
+    #undef ESP8266_AT_USE_NRF528XX
+  #endif
+  #define ESP8266_AT_USE_NRF528XX      true
+  #warning Use nFR52 architecture from ESP8266_AT_WiFiManager
+#endif
+
+#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
+  #if defined(STM32F0)
+  #error STMF0 not supported
+  #endif
+  #if defined(ESP8266_AT_USE_STM32)
+  #undef ESP8266_AT_USE_STM32
+  #endif
+  #define ESP8266_AT_USE_STM32      true
+#endif
+
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
   #if defined(ESP8266_AT_USE_SAM_DUE)
-  #undef ESP8266_AT_USE_SAM_DUE
+    #undef ESP8266_AT_USE_SAM_DUE
   #endif
   #define ESP8266_AT_USE_SAM_DUE      true
   #warning Use SAM_DUE architecture from ESP8266_AT_WiFiManager
 #endif
 
-#if ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-   || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-   || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-   || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) )    
+#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
+      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
   #if defined(ESP8266_AT_USE_SAMD)
     #undef ESP8266_AT_USE_SAMD
   #endif
   #define ESP8266_AT_USE_SAMD      true
   #warning Use SAMD architecture from ESP8266_AT_WiFiManager
-#endif
-
-#ifdef CORE_TEENSY
-  #if defined(ESP8266_AT_USE_TEENSY)
-    #undef ESP8266_AT_USE_TEENSY
-  #endif
-  #define ESP8266_AT_USE_TEENSY      true
-  #warning Use TEENSY architecture from ESP8266_AT_WiFiManager
 #endif
 
 #if ( defined(ARDUINO_AVR_NANO) || defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_DUEMILANOVE) || defined(ARDUINO_AVR_YUN) || \
@@ -68,7 +83,7 @@
       defined(ARDUINO_AVR_ESPLORA) || defined(ARDUINO_AVR_LILYPAD) || defined(ARDUINO_AVR_LILYPAD_USB) || defined(ARDUINO_AVR_ROBOT_CONTROL) || \
       defined(ARDUINO_AVR_UNO_WIFI_REV2) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega1280__) || \
       defined(__AVR_ATmega1284__) || defined(__AVR_ATmega2560__) )
-  #error This code is intended to run on the AVR platform! Please check your Tools->Board setting.
+  #error This code is not intended to run on the AVR platform! Please check your Tools->Board setting.
 #endif
 
 #include <avr/pgmspace.h>
@@ -120,33 +135,33 @@ const char HTTP_HEAD_M_ONE[]            = "-1";
 //KH
 #define WIFI_MANAGER_MAX_PARAMS 20
 
-class ESP_AT_WMParameter 
+class ESP_AT_WMParameter
 {
-public:
-  ESP_AT_WMParameter(const char *custom);
-  ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length);
-  ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom);
-  ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement);
+  public:
+    ESP_AT_WMParameter(const char *custom);
+    ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length);
+    ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom);
+    ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement);
 
-  ~ESP_AT_WMParameter();
+    ~ESP_AT_WMParameter();
 
-  const char *getID();
-  const char *getValue();
-  const char *getPlaceholder();
-  int         getValueLength();
-  int         getLabelPlacement();
-  const char *getCustomHTML();
-private:
-  const char *_id;
-  const char *_placeholder;
-  char       *_value;
-  int         _length;
-  int         _labelPlacement;
-  const char *_customHTML;
+    const char *getID();
+    const char *getValue();
+    const char *getPlaceholder();
+    int         getValueLength();
+    int         getLabelPlacement();
+    const char *getCustomHTML();
+  private:
+    const char *_id;
+    const char *_placeholder;
+    char       *_value;
+    int         _length;
+    int         _labelPlacement;
+    const char *_customHTML;
 
-  void init(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement);
+    void init(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement);
 
-  friend class ESP_AT_WiFiManager;
+    friend class ESP_AT_WiFiManager;
 };
 
 typedef struct _ESP_AT_WM_Configuration
@@ -162,39 +177,40 @@ typedef struct _ESP_AT_WM_Configuration
 uint16_t CONFIG_DATA_SIZE = sizeof(ESP_AT_WM_Configuration);
 
 #define ESP_AT_BOARD_TYPE   "ESP_AT"
-#define ESP_AT_NO_CONFIG    "nothing"
+#define ESP_AT_NO_CONFIG    "blank"
 
 //#define EEPROM_SIZE       E2END
 //#define EEPROM_SIZE       512
 
 #ifndef EEPROM_SIZE
-#define EEPROM_SIZE     512
+  #define EEPROM_SIZE     1024
 #else
-#if (EEPROM_SIZE > 4096)
-#warning EEPROM_SIZE must be <= 4096. Reset to 4096
-#undef EEPROM_SIZE
-#define EEPROM_SIZE     4096
-#endif
-#if (EEPROM_SIZE < CONFIG_DATA_SIZE)
-#warning EEPROM_SIZE must be > CONFIG_DATA_SIZE. Reset to 512
-#undef EEPROM_SIZE
-#define EEPROM_SIZE     512
-#endif
+  #if (EEPROM_SIZE > 4096)
+    #warning EEPROM_SIZE must be <= 4096. Reset to 4096
+    #undef EEPROM_SIZE
+    #define EEPROM_SIZE     4096
+  #endif
+  
+  #if (EEPROM_SIZE < CONFIG_DATA_SIZE)
+    #warning EEPROM_SIZE must be > CONFIG_DATA_SIZE. Reset to 1024
+    #undef EEPROM_SIZE
+    #define EEPROM_SIZE     1024
+  #endif
 #endif
 
 #ifndef EEPROM_START
-#define EEPROM_START     0
+  #define EEPROM_START     0
 #else
-#if (EEPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE)
-#error EPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE. Please adjust.
+  #if (EEPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE)
+    #error EPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE. Please adjust.
+  #endif
 #endif
-#endif
 
 
-  #define DEFAULT_PORTAL_TIMEOUT  	60000L
+#define DEFAULT_PORTAL_TIMEOUT    60000L
 
-  class ESP_AT_WiFiManager
-  {
+class ESP_AT_WiFiManager
+{
   public:
 
     ESP_AT_WiFiManager(void);
@@ -238,7 +254,7 @@ uint16_t CONFIG_DATA_SIZE = sizeof(ESP_AT_WM_Configuration);
     void          setSaveConfigCallback(void(*func)(void));
 
     //adds a custom parameter
-    bool 				addParameter(ESP_AT_WMParameter *p);
+    bool        addParameter(ESP_AT_WMParameter *p);
 
     //if this is set, it will exit after config, even if connection is unsucessful.
     void          setBreakAfterConfig(bool shouldBreak);
@@ -252,14 +268,18 @@ uint16_t CONFIG_DATA_SIZE = sizeof(ESP_AT_WM_Configuration);
     int           scanWifiNetworks(int **indicesptr);
 
     // return SSID of router in STA mode got from config portal. NULL if no user's input //KH
-    String				getSSID(void) { return WiFi_SSID(); }
+    String        getSSID(void) {
+      return WiFi_SSID();
+    }
 
     // return password of router in STA mode got from config portal. NULL if no user's input //KH
-    String				getPW(void) { return WiFi_Pass(); }
+    String        getPW(void) {
+      return WiFi_Pass();
+    }
 
     //returns the list of Parameters
     ESP_AT_WMParameter** getParameters();
-    
+
     // returns the Parameters Count
     int           getParametersCount();
 
@@ -269,56 +289,55 @@ uint16_t CONFIG_DATA_SIZE = sizeof(ESP_AT_WM_Configuration);
     {
       if (!hadConfigData)
         getConfigData();
-        
+
       if (hadConfigData)
-        return (String(ESP_AT_WM_Config.wifi_ssid));      
+        return (String(ESP_AT_WM_Config.wifi_ssid));
       else
-        return ""; 
+        return "";
     }
 
     String WiFi_Pass(void)
     {
       if (!hadConfigData)
         getConfigData();
-        
+
       if (hadConfigData)
-        return (String(ESP_AT_WM_Config.wifi_pw));      
+        return (String(ESP_AT_WM_Config.wifi_pw));
       else
-        return ""; 
+        return "";
     }
-   
+
     String IPAddressToString(const IPAddress& address)
     {
       return (String(address[0]) + "." + address[1] + "." + address[2] + "." + address[3]);
     }
-    
-    void resetBoard(void)
-    {
-    }
-      
+
+    void resetBoard(void);
+
     void setAPChannel(int apChannel)
     {
       _apChannel = apChannel;
     }
-    
-    void clearConfigData(void);
 
+    void clearConfigData(void);
+    
   private:
 
-  ESP_AT_WM_Configuration ESP_AT_WM_Config;
-  bool hadConfigData = false;
-      
-  #if USE_STATIC_WEBSERVER 
-  ESP8266_AT_WebServer server;
-  #else
-  ESP8266_AT_WebServer *server = NULL;
-  #endif
+    ESP_AT_WM_Configuration ESP_AT_WM_Config;
+    
+    bool hadConfigData = false;
+
+#if USE_STATIC_WEBSERVER
+    ESP8266_AT_WebServer server;
+#else
+    ESP8266_AT_WebServer *server = NULL;
+#endif
 
     void          setupConfigPortal();
 
     const char*   _apName     = "ESP_AT_WM_NET";
     const char*   _apPassword = NULL;
-    
+
     // Default channel 10;
     int           _apChannel  = 10;
 
@@ -341,7 +360,7 @@ uint16_t CONFIG_DATA_SIZE = sizeof(ESP_AT_WM_Configuration);
     const char*   _customHeadElement = "";
 
     int           status;
-    
+
     int           connectWifi(String ssid, String pass);
     uint8_t       waitForConnectResult();
 
@@ -382,48 +401,46 @@ uint16_t CONFIG_DATA_SIZE = sizeof(ESP_AT_WM_Configuration);
       DEBUG_WM("NO fromString METHOD ON IPAddress, you need ESP8266 core 2.1.0 or newer for Custom IP configuration to work.");
       return false;
     }
-      
+
     void  displayConfigData(void);
     int   calcChecksum(void);
+    void  loadConfigData(void);
     bool  getConfigData(void);
-    void  saveConfigData(void);    
-  };
-  
+    void  saveConfigData(void);
+};
+
 #if DEBUG_WIFIMGR
-#define DEBUG_WM1(p1)                 { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.println(p1); }
-#define DEBUG_WM2(p1,p2)              { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
-                                        ESP_AT_DEBUG_OUTPUT.println(p2); }
-#define DEBUG_WM3(p1,p2,p3)           { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
-                                        ESP_AT_DEBUG_OUTPUT.print(p2); ESP_AT_DEBUG_OUTPUT.println(p3); }
-#define DEBUG_WM4(p1,p2,p3,p4)        { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
-                                        ESP_AT_DEBUG_OUTPUT.print(p2); ESP_AT_DEBUG_OUTPUT.print(p3); ESP_AT_DEBUG_OUTPUT.println(p4); }
-#define DEBUG_WM6(p1,p2,p3,p4,p5,p6)  { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
-                                        ESP_AT_DEBUG_OUTPUT.print(p2); ESP_AT_DEBUG_OUTPUT.print(p3); ESP_AT_DEBUG_OUTPUT.print(p4); \
-                                        ESP_AT_DEBUG_OUTPUT.print(p5); ESP_AT_DEBUG_OUTPUT.println(p6); }
+  #define DEBUG_WM1(p1)                 { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.println(p1); }
+  #define DEBUG_WM2(p1,p2)              { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
+      ESP_AT_DEBUG_OUTPUT.println(p2); }
+  #define DEBUG_WM3(p1,p2,p3)           { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
+      ESP_AT_DEBUG_OUTPUT.print(p2); ESP_AT_DEBUG_OUTPUT.println(p3); }
+  #define DEBUG_WM4(p1,p2,p3,p4)        { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
+      ESP_AT_DEBUG_OUTPUT.print(p2); ESP_AT_DEBUG_OUTPUT.print(p3); ESP_AT_DEBUG_OUTPUT.println(p4); }
+  #define DEBUG_WM6(p1,p2,p3,p4,p5,p6)  { ESP_AT_DEBUG_OUTPUT.print(F("*WM: ")); ESP_AT_DEBUG_OUTPUT.print(p1); \
+      ESP_AT_DEBUG_OUTPUT.print(p2); ESP_AT_DEBUG_OUTPUT.print(p3); ESP_AT_DEBUG_OUTPUT.print(p4); \
+      ESP_AT_DEBUG_OUTPUT.print(p5); ESP_AT_DEBUG_OUTPUT.println(p6); }
 #else
-#define DEBUG_WM1(p1)
-#define DEBUG_WM2(p1,p2)
-#define DEBUG_WM3(p1,p2,p3)
-#define DEBUG_WM4(p1,p2,p3,p4)
-#define DEBUG_WM6(p1,p2,p3,p4,p5,p6)
-#endif
-                                      
-#include "ESP_AT_WiFiManager-impl.h"
- 
-#if (ESP8266_AT_USE_SAM_DUE)
-  //Use DueFlashStorage to simulate EEPROM
-  //https://github.com/sebnil/DueFlashStorage
-  #include <DueFlashStorage.h>
-  DueFlashStorage dueFlashStorage;
-  #include "ESP_AT_WiFiManager-impl_DUE.h"
-#elif (ESP8266_AT_USE_SAMD)
-  //https://github.com/cmaglie/FlashStorage
-  #include <FlashStorage.h>
-  FlashStorage(ESP_AT_WM_Config_data, ESP_AT_WM_Configuration);
-  #include "ESP_AT_WiFiManager-impl_SAMD.h" 
-#else     //if defined(CORE_TEENSY)
-  #include <EEPROM.h>
-  #include "ESP_AT_WiFiManager-impl_Teensy.h"
+  #define DEBUG_WM1(p1)
+  #define DEBUG_WM2(p1,p2)
+  #define DEBUG_WM3(p1,p2,p3)
+  #define DEBUG_WM4(p1,p2,p3,p4)
+  #define DEBUG_WM6(p1,p2,p3,p4,p5,p6)
 #endif
 
+#include "ESP_AT_WiFiManager-impl.h"
+
+#if (ESP8266_AT_USE_NRF528XX)
+  //Use nRF52's LittleFS
+  #include "ESP_AT_WiFiManager-impl_nRF52.h"
+#elif (ESP8266_AT_USE_SAM_DUE)
+  #include "ESP_AT_WiFiManager-impl_DUE.h"
+#elif (ESP8266_AT_USE_SAMD)
+  #include "ESP_AT_WiFiManager-impl_SAMD.h"
+#elif (ESP8266_AT_USE_STM32)
+  #include "ESP_AT_WiFiManager-impl_STM32.h"
+#else
+  #error Not supported Boards. Please check your Tools->Board setting.
 #endif
+
+#endif    //ESP_AT_WiFiManager_h

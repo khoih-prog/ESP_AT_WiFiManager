@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-   ESP_AT_WiFiManager-impl_SAMD.h
+   ESP_AT_WiFiManager-impl_STM32.h
    WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
 
    ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
@@ -23,29 +23,30 @@
     1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B30_ublox, etc.
  *****************************************************************************************************************************/
 
-#ifndef ESP_AT_WiFiManager_impl_SAMD_h
-#define ESP_AT_WiFiManager_impl_SAMD_h
+#ifndef ESP_AT_WiFiManager_impl_STM32_h
+#define ESP_AT_WiFiManager_impl_STM32_h
 
-//https://github.com/khoih-prog/FlashStorage_SAMD
-#include <FlashStorage_SAMD.h>
-FlashStorage(ESP_AT_WM_Config_data, ESP_AT_WM_Configuration);
+#include <EEPROM.h>
 
 void ESP_AT_WiFiManager::resetBoard(void)
 {
-  NVIC_SystemReset();
+  void(*resetFunc)(void) = 0;
+  resetFunc();
 }
-  
+
 void ESP_AT_WiFiManager::clearConfigData(void)
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
-  ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
+  saveConfigData();
 }
 
 bool ESP_AT_WiFiManager::getConfigData(void)
 {
   hadConfigData = false;
   
-  ESP_AT_WM_Config = ESP_AT_WM_Config_data.read();
+  EEPROM.begin();
+  DEBUG_WM2(F("EEPROMsz:"), EEPROM_SIZE);
+  EEPROM.get(EEPROM_START, ESP_AT_WM_Config);
 
   int calChecksum = calcChecksum();
   
@@ -64,7 +65,8 @@ bool ESP_AT_WiFiManager::getConfigData(void)
     // Don't need
     ESP_AT_WM_Config.checkSum = 0;
 
-    ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
+
+    EEPROM.put(EEPROM_START, ESP_AT_WM_Config);
 
     return false;
   }
@@ -89,9 +91,11 @@ void ESP_AT_WiFiManager::saveConfigData(void)
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
   
-  DEBUG_WM2(F("SaveFlash,CSum="), calChecksum);
+  DEBUG_WM2(F("SaveEEPROM,CSum="), calChecksum);
 
-  ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
+  EEPROM.put(EEPROM_START, ESP_AT_WM_Config);
 }
     
-#endif      //ESP_AT_WiFiManager_impl_SAMD_h
+#endif      //ESP_AT_WiFiManager_impl_STM32_h
+
+

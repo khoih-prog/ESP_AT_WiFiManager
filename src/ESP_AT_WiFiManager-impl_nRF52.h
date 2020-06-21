@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-   ESP_AT_WiFiManager-impl_SAMD.h
+   ESP_AT_WiFiManager-impl_nRF52.h
    WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
 
    ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
@@ -23,37 +23,89 @@
     1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B30_ublox, etc.
  *****************************************************************************************************************************/
 
-#ifndef ESP_AT_WiFiManager_impl_SAMD_h
-#define ESP_AT_WiFiManager_impl_SAMD_h
+#ifndef ESP_AT_WiFiManager_impl_nRF52_h
+#define ESP_AT_WiFiManager_impl_nRF52_h
 
-//https://github.com/khoih-prog/FlashStorage_SAMD
-#include <FlashStorage_SAMD.h>
-FlashStorage(ESP_AT_WM_Config_data, ESP_AT_WM_Configuration);
+//Use LittleFS for nRF52
+#include <Adafruit_LittleFS.h>
+#include <InternalFileSystem.h>
+
+using namespace Adafruit_LittleFS_Namespace;
+File file(InternalFS);
+
+// Use LittleFS/InternalFS for nRF52
+#define  CONFIG_FILENAME              ("/wm_config.dat")
+#define  CONFIG_FILENAME_BACKUP       ("/wm_config.bak")
 
 void ESP_AT_WiFiManager::resetBoard(void)
 {
+  delay(1000);
+  // Restart for nRF52
   NVIC_SystemReset();
 }
-  
+
 void ESP_AT_WiFiManager::clearConfigData(void)
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
-  ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
+  
+  saveConfigData();
 }
 
+void ESP_AT_WiFiManager::loadConfigData(void)
+{
+  DEBUG_WM1(F("LoadCfgFile "));
+  
+  // file existed
+  file.open(CONFIG_FILENAME, FILE_O_READ);      
+  if (!file)
+  {
+    DEBUG_WM1(F("failed"));
+
+    // Trying open redundant config file
+    file.open(CONFIG_FILENAME_BACKUP, FILE_O_READ);
+    DEBUG_WM1(F("LoadBkUpCfgFile "));
+
+    if (!file)
+    {
+      DEBUG_WM1(F("failed"));
+      return;
+    }
+  }
+ 
+  file.seek(0);
+  file.read((char *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
+
+  DEBUG_WM1(F("OK"));
+  file.close();
+}
+    
 bool ESP_AT_WiFiManager::getConfigData(void)
 {
   hadConfigData = false;
   
-  ESP_AT_WM_Config = ESP_AT_WM_Config_data.read();
+  // Initialize Internal File System
+  if (!InternalFS.begin())
+  {
+    DEBUG_WM1(F("InternalFS failed"));
+    return false;
+  }
+  
+  // if config file exists, load
+  loadConfigData();   
+  DEBUG_WM1(F("======= Start Stored Config Data ======="));
+  displayConfigData();    
 
   int calChecksum = calcChecksum();
-  
+
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
+
 
   if ( (strncmp(ESP_AT_WM_Config.header, ESP_AT_BOARD_TYPE, strlen(ESP_AT_BOARD_TYPE)) != 0) ||
        (calChecksum != ESP_AT_WM_Config.checkSum) )
   {
+    // Including Credentials CSum
+    DEBUG_WM2(F("InitCfgFile,sz="), sizeof(ESP_AT_WM_Config));
+        
     memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
 
     // doesn't have any configuration
@@ -64,7 +116,7 @@ bool ESP_AT_WiFiManager::getConfigData(void)
     // Don't need
     ESP_AT_WM_Config.checkSum = 0;
 
-    ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
+    saveConfigData();
 
     return false;
   }
@@ -86,12 +138,45 @@ bool ESP_AT_WiFiManager::getConfigData(void)
 
 void ESP_AT_WiFiManager::saveConfigData(void)
 {
+  DEBUG_WM1(F("SaveCfgFile "));
+
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
   
-  DEBUG_WM2(F("SaveFlash,CSum="), calChecksum);
+  DEBUG_WM2(F("WCSum=0x"), String(calChecksum, HEX));
 
-  ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
+  file.open(CONFIG_FILENAME, FILE_O_WRITE);
+
+  if (file)
+  {
+    file.seek(0);
+    file.write((uint8_t*) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
+    
+    file.close();
+    DEBUG_WM1(F("OK"));
+  }
+  else
+  {
+    DEBUG_WM1(F("failed"));
+  }
+
+  DEBUG_WM1(F("SaveBkUpCfgFile "));
+
+  // Trying open redundant Auth file
+  file.open(CONFIG_FILENAME_BACKUP, FILE_O_WRITE);
+
+  if (file)
+  {
+    file.seek(0);
+    file.write((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
+    
+    file.close();
+    DEBUG_WM1(F("OK"));
+  }
+  else
+  {
+    DEBUG_WM1(F("failed"));
+  } 
 }
     
-#endif      //ESP_AT_WiFiManager_impl_SAMD_h
+#endif      //ESP_AT_WiFiManager_impl_nRF52_h
