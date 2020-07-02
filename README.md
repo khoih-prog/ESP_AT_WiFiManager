@@ -14,8 +14,8 @@
 
 ### New Version v1.0.1
 
-1. Add support to ***nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved ***automatically in LittleFS***.
-2. Improve support to ***STM32F**. Credentials to be saved ***automatically in EEPROM***.
+1. Add support to ***nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)***. Credentials to be saved ***automatically in LittleFS***.
+2. Improve support to ***STM32F***. Credentials to be saved ***automatically in EEPROM***.
 3. Drop support to Teensy boards.
 
 This library is based on, modified, bug-fixed and improved from:
@@ -896,8 +896,8 @@ Sometimes, the library will only work if you update the `ESP8266/ESP32-AT shield
 
 ### New Version v1.0.1
 
-1. Add support to ***nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved ***automatically in LittleFS***.
-2. Improve support to ***STM32F**. Credentials to be saved ***automatically in EEPROM***.
+1. Add support to ***nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, NINA_B112_ublox, etc.)***. Credentials to be saved ***automatically in LittleFS***.
+2. Improve support to ***STM32F***. Credentials to be saved ***automatically in EEPROM***.
 3. Drop support to Teensy boards.
 
 #### New in v1.0.0
