@@ -4,7 +4,7 @@
 
    ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32, etc. boards running `ESP8266/ESP32-AT-command` shields
    (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-   
+
    Inspired by:
    http://www.esp8266.com/viewtopic.php?f=29&t=2520
    https://github.com/chriscook8/esp-arduino-apboot
@@ -15,12 +15,13 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
    Licensed under MIT license
-   Version: 1.0.1
+   Version: 1.0.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      08/03/2020 Initial coding
     1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B30_ublox, etc.
+    1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when no WiFi configuration has been previously entered or when a button is pushed.
@@ -35,6 +36,9 @@
 
 #define _ESP_AT_LOGLEVEL_   0
 #define DEBUG_WIFIMGR       true  //false
+
+// Uncomment to use ESP32-AT commands
+//#define USE_ESP32_AT      true
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
 #if defined(STM32F0)
@@ -74,27 +78,29 @@
 #if (ESP8266_AT_USE_NRF528XX)
 
 #if defined(NRF52840_FEATHER)
-#define BOARD_TYPE      "NRF52840_FEATHER"
+#define BOARD_TYPE      "NRF52840_FEATHER_EXPRESS"
 #elif defined(NRF52832_FEATHER)
 #define BOARD_TYPE      "NRF52832_FEATHER"
 #elif defined(NRF52840_FEATHER_SENSE)
 #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
 #elif defined(NRF52840_ITSYBITSY)
-#define BOARD_TYPE      "NRF52840_ITSYBITSY"
+#define BOARD_TYPE      "NRF52840_ITSYBITSY_EXPRESS"
 #elif defined(NRF52840_CIRCUITPLAY)
-#define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
+#define BOARD_TYPE      "NRF52840_CIRCUIT_PLAYGROUND"
 #elif defined(NRF52840_CLUE)
 #define BOARD_TYPE      "NRF52840_CLUE"
 #elif defined(NRF52840_METRO)
-#define BOARD_TYPE      "NRF52840_METRO"
+#define BOARD_TYPE      "NRF52840_METRO_EXPRESS"
 #elif defined(NRF52840_PCA10056)
-#define BOARD_TYPE      "NRF52840_PCA10056"
+#define BOARD_TYPE      "NORDIC_NRF52840DK"
 #elif defined(NINA_B302_ublox)
 #define BOARD_TYPE      "NINA_B302_ublox"
 #elif defined(NINA_B112_ublox)
 #define BOARD_TYPE      "NINA_B112_ublox"
 #elif defined(PARTICLE_XENON)
 #define BOARD_TYPE      "PARTICLE_XENON"
+#elif defined(MDBT50Q_RX)
+#define BOARD_TYPE      "RAYTAC_MDBT50Q_RX"
 #elif defined(ARDUINO_NRF52_ADAFRUIT)
 #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
 #else
@@ -127,8 +133,48 @@
 #define BOARD_TYPE      "SAMD MKRVIDOR4000"
 #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
 #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+#elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
+#elif defined(ADAFRUIT_METRO_M0_EXPRESS)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
+#elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
+#elif defined(ADAFRUIT_GEMMA_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
+#elif defined(ADAFRUIT_TRINKET_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
+#elif defined(ADAFRUIT_ITSYBITSY_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
+#elif defined(ARDUINO_SAMD_HALLOWING_M0)
+#define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
+#elif defined(ADAFRUIT_METRO_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
+#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
 #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+#elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
+#elif defined(ADAFRUIT_PYPORTAL)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
+#elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
+#elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
+#elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
+#elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
+#elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
+#elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
+#elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
+#elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
 #elif defined(__SAMD21E18A__)
 #define BOARD_TYPE      "SAMD21E18A"
 #elif defined(__SAMD21G18A__)
@@ -157,7 +203,24 @@
 #elif (ESP8266_AT_USE_STM32)
 // For STM32F
 #define EspSerial Serial1
-#define BOARD_TYPE      "STM32F"
+
+#if defined(STM32F0)
+  #define BOARD_TYPE  "STM32F0"
+  #error Board STM32F0 not supported
+#elif defined(STM32F1)
+  #define BOARD_TYPE  "STM32F1"
+#elif defined(STM32F2)
+  #define BOARD_TYPE  "STM32F2"
+#elif defined(STM32F3)
+  #define BOARD_TYPE  "STM32F3"
+#elif defined(STM32F4)
+  #define BOARD_TYPE  "STM32F4"
+#elif defined(STM32F7)
+  #define BOARD_TYPE  "STM32F7"
+#else
+  #warning STM32 unknown board selected
+  #define BOARD_TYPE  "STM32 Unknown"
+#endif
 
 #else
 // For other boards. Change Serial as necessary

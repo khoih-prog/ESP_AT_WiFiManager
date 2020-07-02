@@ -8,6 +8,10 @@
 
 ---
 
+### New Version v1.0.2
+
+1. Add support to ***ESP32-AT-command shield***.
+
 ### New Version v1.0.1
 
 1. Add support to ***nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved ***automatically in LittleFS***.
@@ -34,15 +38,59 @@ The configuration portal is captive, so it will present the configuration dialog
 ## Prerequisite
  1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. [`Adafruit nRF52 v0.20.1 or later`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, ***NINA_B302_ublox, NINA_B112_ublox***, etc.
- 3. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+ 3. [`Arduino Core for STM32 v1.9.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
  4. [`Arduino SAM DUE core 1.6.12 or later`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
- 5. [`Arduino SAMD core 1.8.5 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
- 6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
- 7. [`ESP8266_AT_WebServer library v1.0.6 or later`](https://github.com/khoih-prog/ESP8266_AT_WebServer). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
+ 5. [`Arduino SAMD core 1.8.6 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
+ 6. [`Adafruit SAMD core 1.5.14 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
+ 7. [`ESP8266_AT_WebServer library v1.0.8 or later`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
  8. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) and SAMD51 boards (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)
  9. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
 10. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52 boards.
-11. [`AT Firmare v1.7.4.0 or later`](https://github.com/espressif/ESP8266_NONOS_SDK/tree/master/bin/at) for ESP8266-AT shields
+11. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+12. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+
+### Important Notes
+
+1. Tested OK with for ESP8266-AT shields:
+  - [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip)
+  - [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) 
+  
+  
+2. Tested OK with for ESP32-AT shields:
+  - [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip)
+    
+    ```
+    AT version:2.1.0.0-dev(4f6b92c - Jun 10 2020 10:36:54)
+    SDK version:v4.0.1-193-ge7ac221b4
+    compile time(b85a8df):Jun 18 2020 14:00:59
+    Bin version:2.0.0(WROOM-32)
+    ```
+    
+    See instructions at [AT Command Core](https://github.com/espressif/esp-at) and [ESP_AT_Get_Started](https://github.com/espressif/esp-at/blob/master/docs/en/get-started/ESP_AT_Get_Started.md)
+  
+3. Upload [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) bin files to correct locations as follows:
+
+```
+# BOOT MODE
+
+### Flash size 8Mbit: 512KB+512KB
+    boot_v1.2+.bin              0x00000
+    user1.1024.new.2.bin        0x01000
+    esp_init_data_default.bin   0xfc000
+    blank.bin                   0x7e000 & 0xfe000
+
+
+### Flash size 16Mbit-C1: 1024KB+1024KB
+    boot_v1.2+.bin              0x00000
+    user1.2048.new.5.bin        0x01000
+    esp_init_data_default.bin   0x1fc000
+    blank.bin                   0xfe000 & 0x1fe000
+```
+
+3. Test before using different AT-Firmware Version at your own risks. Just use any simple Blynk sketch to verify if the AT-firmware is OK.
+4. Compatible AT-Firmare version will be updated. Check for and download Firmwares from [AT_Firmwares](AT_Firmwares) all supported AT Firmwares.
+
+---
 
 ## How It Works
 
@@ -147,6 +195,8 @@ Also see examples:
  3. [AutoConnect](examples/AutoConnect)
  4. [AutoConnectWithFeedback](examples/AutoConnectWithFeedback)
 
+---
+
 ## So, how it works?
 In `Configuration Portal Mode`, it starts an AP called `ESP_AT_XXXXXX`. Connect to it using the `configurable password` you can define in the code. For example, `ESP_AT_PW` (see examples):
 
@@ -203,14 +253,16 @@ which will wait 1 minutes (60 seconds).
 
 When the time passes, the startConfigPortal function will return and continue the sketch, unless you're accessing the Config Portal. In this case, the `startConfigPortal` function will stay until you save config data or exit the Config Portal.
 
+---
 
-#### On Demand Configuration Portal
-
-Sample Code
+### Example [ConfigOnSwitch](examples/ConfigOnSwitch)
 
 ```cpp
 #define _ESP_AT_LOGLEVEL_   0
 #define DEBUG_WIFIMGR       true  //false
+
+// Uncomment to use ESP32-AT commands
+//#define USE_ESP32_AT      true
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
 #if defined(STM32F0)
@@ -250,27 +302,29 @@ Sample Code
 #if (ESP8266_AT_USE_NRF528XX)
 
 #if defined(NRF52840_FEATHER)
-#define BOARD_TYPE      "NRF52840_FEATHER"
+#define BOARD_TYPE      "NRF52840_FEATHER_EXPRESS"
 #elif defined(NRF52832_FEATHER)
 #define BOARD_TYPE      "NRF52832_FEATHER"
 #elif defined(NRF52840_FEATHER_SENSE)
 #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
 #elif defined(NRF52840_ITSYBITSY)
-#define BOARD_TYPE      "NRF52840_ITSYBITSY"
+#define BOARD_TYPE      "NRF52840_ITSYBITSY_EXPRESS"
 #elif defined(NRF52840_CIRCUITPLAY)
-#define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
+#define BOARD_TYPE      "NRF52840_CIRCUIT_PLAYGROUND"
 #elif defined(NRF52840_CLUE)
 #define BOARD_TYPE      "NRF52840_CLUE"
 #elif defined(NRF52840_METRO)
-#define BOARD_TYPE      "NRF52840_METRO"
+#define BOARD_TYPE      "NRF52840_METRO_EXPRESS"
 #elif defined(NRF52840_PCA10056)
-#define BOARD_TYPE      "NRF52840_PCA10056"
+#define BOARD_TYPE      "NORDIC_NRF52840DK"
 #elif defined(NINA_B302_ublox)
 #define BOARD_TYPE      "NINA_B302_ublox"
 #elif defined(NINA_B112_ublox)
 #define BOARD_TYPE      "NINA_B112_ublox"
 #elif defined(PARTICLE_XENON)
 #define BOARD_TYPE      "PARTICLE_XENON"
+#elif defined(MDBT50Q_RX)
+#define BOARD_TYPE      "RAYTAC_MDBT50Q_RX"
 #elif defined(ARDUINO_NRF52_ADAFRUIT)
 #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
 #else
@@ -303,8 +357,48 @@ Sample Code
 #define BOARD_TYPE      "SAMD MKRVIDOR4000"
 #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
 #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+#elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
+#elif defined(ADAFRUIT_METRO_M0_EXPRESS)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
+#elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
+#elif defined(ADAFRUIT_GEMMA_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
+#elif defined(ADAFRUIT_TRINKET_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
+#elif defined(ADAFRUIT_ITSYBITSY_M0)
+#define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
+#elif defined(ARDUINO_SAMD_HALLOWING_M0)
+#define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
+#elif defined(ADAFRUIT_METRO_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
+#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
 #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+#elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
+#elif defined(ADAFRUIT_PYPORTAL)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
+#elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
+#elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
+#elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
+#elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
+#elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
+#elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
+#elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
+#elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
+#define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
 #elif defined(__SAMD21E18A__)
 #define BOARD_TYPE      "SAMD21E18A"
 #elif defined(__SAMD21G18A__)
@@ -333,7 +427,24 @@ Sample Code
 #elif (ESP8266_AT_USE_STM32)
 // For STM32F
 #define EspSerial Serial1
-#define BOARD_TYPE      "STM32F"
+
+#if defined(STM32F0)
+  #define BOARD_TYPE  "STM32F0"
+  #error Board STM32F0 not supported
+#elif defined(STM32F1)
+  #define BOARD_TYPE  "STM32F1"
+#elif defined(STM32F2)
+  #define BOARD_TYPE  "STM32F2"
+#elif defined(STM32F3)
+  #define BOARD_TYPE  "STM32F3"
+#elif defined(STM32F4)
+  #define BOARD_TYPE  "STM32F4"
+#elif defined(STM32F7)
+  #define BOARD_TYPE  "STM32F7"
+#else
+  #warning STM32 unknown board selected
+  #define BOARD_TYPE  "STM32 Unknown"
+#endif
 
 #else
 // For other boards. Change Serial as necessary
@@ -371,20 +482,6 @@ const int LOCAL_PIN_LED = 13; // Pin 13, Controls the onboard LED.
 #define LED_ON    HIGH
 #define LED_OFF   LOW
 
-/* Trigger for inititating config mode is Pin D3 and also flash button on NodeMCU
-   Flash button is convenient to use but if it is pressed it will stuff up the serial port device driver
-   until the computer is rebooted on windows machines.
-*/
-const int TRIGGER_PIN = 22;   // Change the PIN to whatever you'd like
-/*
-   Alternative trigger pin. Needs to be connected to a button to use this pin. It must be a momentary connection
-   not connected permanently to ground. Either trigger pin will work.
-*/
-const int TRIGGER_PIN2 = 23; // Change the PIN to whatever you'd like
-
-// Indicates whether ESP has WiFi credentials saved from previous session
-bool initialConfig = false;
-
 void heartBeatPrint(void)
 {
   static int num = 1;
@@ -409,8 +506,9 @@ void check_status()
 {
   static unsigned long checkstatus_timeout = 0;
 
-#define HEARTBEAT_INTERVAL    10000L
-  // Print hearbeat every HEARTBEAT_INTERVAL (10) seconds.
+  //KH
+#define HEARTBEAT_INTERVAL    600000L
+  // Print hearbeat every HEARTBEAT_INTERVAL (600) seconds.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
     heartBeatPrint();
@@ -470,8 +568,6 @@ void setup()
 {
   // put your setup code here, to run once:
   // initialize the LED digital pin as an output.
-  pinMode(TRIGGER_PIN, INPUT_PULLUP);
-  pinMode(TRIGGER_PIN2, INPUT_PULLUP);
   pinMode(LOCAL_PIN_LED, OUTPUT);
   digitalWrite(LOCAL_PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
 
@@ -480,7 +576,7 @@ void setup()
 
   unsigned long startedAt = millis();
 
-  Serial.println("\nStart ConfigOnSwitch on " + String(BOARD_TYPE));
+  Serial.println("\nStart ConfigOnStartup on " + String(BOARD_TYPE));
 
   // initialize serial for ESP module
   EspSerial.begin(115200);
@@ -526,20 +622,14 @@ void setup()
   }
 }
 
+
 void loop()
 {
-  // is configuration portal requested?
-  if ((digitalRead(TRIGGER_PIN) == LOW) || (digitalRead(TRIGGER_PIN2) == LOW))
-  {
-    Serial.println("\nConfig Portal requested.");
-    enterConfigPortal();
-  }
-
   // put your main code here, to run repeatedly
   check_status();
-
 }
 ```
+---
 
 This is the terminal output when running [ConfigOnSwitch](examples/ConfigOnSwitch) example on ***Adafruit Itsy-BItsy nRF52840***:
 
@@ -633,6 +723,90 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHH
 HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 ```
 
+---
+
+This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStartup) example using ***SAM-DUE with ESP32-AT shield***. The ESP32-AT firmware is AT version:2.1.0.0-dev / SDK version:v4.0.1-193-ge7ac221b4:
+
+```
+Start ConfigOnStartup on SAM DUE
+[ESP_AT] AT+RST
+[ESP_AT] ATE0
+[ESP_AT] Use ESP32-AT Command
+[ESP_AT] AT+CWMODE=1
+[ESP_AT] AT+CIPMUX=1
+[ESP_AT] AT+CIPDINFO=1
+[ESP_AT] AT+CWAUTOCONN=0
+[ESP_AT] AT+CWDHCP=1,1
+[ESP_AT] AT+GMR
+[ESP_AT] Firmware Init OK - v4.0.
+[ESP_AT] AT+CIPSTATUS
+Opening Config Portal. *WM: CCSum=0x7f4,RCSum=0x0
+*WM: CCSum=0x7f4,RCSum=0x0
+No stored Credentials. No timeout
+Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_PW
+*WM: Configure AP: ESP_AT_ABCDEF
+*WM: AP PW: ESP_AT_PW
+*WM: Custom AP IP: 192.168.100.1
+[ESP_AT] AT+CWMODE=2
+[ESP_AT] AT+CWDHCP=0,3
+[ESP_AT] AT+CIPAP= 192.168.100.1
+[ESP_AT] IP address set 192.168.100.1
+[ESP_AT] AT+CWMODE= 3
+AT+CWSAP= ESP_AT_ABCDEF ESP_AT_PW
+AT+CWSAP= 1 3
+[ESP_AT] AT+CWDHCP=1,3
+[ESP_AT] Access point started ESP_AT_ABCDEF
+*WM: AP IP: [ESP_AT] AT+CIPAP?
+192.168.100.1
+AT+CIPSERVER= 1 80
+*WM: HTTP server on channel 1
+*WM: Handle WiFi
+*WM: Scan Network
+[ESP_AT] AT+CWLAP
+*WM: HueNet / -33
+*WM: HueNet1 / -40
+*WM: HueNetTek / -43
+*WM: Sent config page
+*WM: WiFi save
+*WM: SaveDueFlash, CSum=2503
+*WM: Sent wifisave page
+*WM: Connect to new AP
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = ****
+*WM: Host Name = blank
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] AT+CWQAP
+[ESP_AT] AT+CIPSTATUS
+[ESP_AT] AT+RST
+[ESP_AT] ATE0
+[ESP_AT] Use ESP32-AT Command
+[ESP_AT] AT+CWMODE=1
+[ESP_AT] AT+CIPMUX=1
+[ESP_AT] AT+CIPDINFO=1
+[ESP_AT] AT+CWAUTOCONN=0
+[ESP_AT] AT+CWDHCP=1,1
+[ESP_AT] AT+CWDHCP=0,1
+[ESP_AT] AT+CIPSTA= 192.168.2.114
+[ESP_AT] IP address set 192.168.2.114
+*WM: Static IP : 192.168.2.114
+AT+CWJAP= HueNet1 ****
+[ESP_AT] Connected to HueNet1
+[ESP_AT] AT+CIPSTATUS
+*WM: Connect result: WL_CONNECTED
+[ESP_AT] AT+CIPSTATUS
+WiFi connected...yeey
+[ESP_AT] AT+CIPSTATUS
+After waiting 0 secs in setup(), connect result is [ESP_AT] AT+CIPSTATUS
+connected. Local IP: [ESP_AT] AT+CIFSR
+192.168.2.114
+[ESP_AT] AT+CIPSTATUS
+H[ESP_AT] AT+CIPSTATUS
+H
+```
+
+---
+
 #### Custom Parameters
 Many applications need configuration parameters like `MQTT host and port`, [Blynk](http://www.blynk.cc) or [emoncms](http://emoncms.org) tokens, etc. While it is possible to use `ESP_AT_WiFiManager` to collect additional parameters it is better to read these parameters from a web service once `ESP_AT_WiFiManager` has been used to connect to the internet. This makes `ESP_AT_WiFiManager` simple to code and use, parameters can be edited on a regular web server and can be changed remotely after deployment.
 
@@ -715,6 +889,10 @@ Sometimes, the library will only work if you update the `ESP8266/ESP32-AT shield
 2. Add more examples 
 
 ---
+
+### New Version v1.0.2
+
+1. Add support to ***ESP32-AT-command shield***.
 
 ### New Version v1.0.1
 

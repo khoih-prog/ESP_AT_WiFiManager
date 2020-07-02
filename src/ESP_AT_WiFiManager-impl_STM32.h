@@ -15,12 +15,13 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
    Licensed under MIT license
-   Version: 1.0.1
+   Version: 1.0.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      08/03/2020 Initial coding
     1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B30_ublox, etc.
+    1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
  *****************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_impl_STM32_h
