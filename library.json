@@ -1,8 +1,8 @@
 {
   "name": "ESP_AT_WiFiManager",
-  "version": "1.0.2",
-  "keywords": "wifi, ESP8266, ESP32, AT, shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32, Credentials, Manager, EEPROM, FlashStorage, DueFlashStorage, LittleFS",
-  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32, etc. boards running ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, SAMD FlashStorage, DueFlashStorage of nRF52 LittleFS.",
+  "version": "1.0.3",
+  "keywords": "wifi, ESP8266, ESP32, AT, shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, Credentials, Manager, EEPROM, FlashStorage, DueFlashStorage, LittleFS",
+  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, etc. boards running ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, SAMD FlashStorage, DueFlashStorage of nRF52 LittleFS.",
   "authors":
   {
     "name":  "Khoi Hoang",
