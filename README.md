@@ -1152,7 +1152,7 @@ Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_PW
 *WM: Connect to new AP
 *WM: EEPROMsz:1024
 *WM: CCSum=0x9c7,RCSum=0x9c7
-*WM: Header = ESP_AT, SSID = HueNet1, PW = jenniqqs
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
 *WM: Host Name = blank
 *WM: Connect wifi with new params
 *WM: Data cleared
