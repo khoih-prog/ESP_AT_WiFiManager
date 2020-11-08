@@ -13,10 +13,10 @@
 
 1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
 2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
-3. Add sample Packages_Patches for STM32 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
+3. Add sample Packages_Patches for **STM32F/L/H/G/WB/MP1** (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
 4. Add Packages_Patches for other boards.
-5. Add instructions to use EspSerial/Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
-6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for Nano-33-IoT, ZERO, MKR, etc.
+5. Add instructions to use EspSerial/Serial1 on some **STM32F/L/H/G/WB/MP1** boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
+6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for **Nano-33-IoT, ZERO, MKR, etc.**
 
 ### New Version v1.0.2
 
@@ -25,16 +25,18 @@
 ### New Version v1.0.1
 
 1. Add support to **nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved **automatically in LittleFS**.
-2. Improve support to **STM32F**. Credentials to be saved **automatically in EEPROM**.
-3. Drop support to Teensy boards.
+2. Improve support to **STM32F/L/H/G/WB/MP1**. Credentials to be saved **automatically in EEPROM**.
+3. Drop support to **Teensy** boards.
 
-This library is based on, modified, bug-fixed and improved from:
+---
+
+This [**ESP_AT_WiFiManager library**](https://github.com/khoih-prog/ESP_AT_WiFiManager) is based on, modified, bug-fixed and improved from:
 
 1. [`Tzapu WiFiManager`](https://github.com/tzapu/WiFiManager)
 2. [`Ken Taylor WiFiManager`](https://github.com/kentaylor/WiFiManager)
 3. [`Khoi Hoang's ESP_WiFiManager`](https://github.com/khoih-prog/ESP_WiFiManager)
 
-to support **nRF52, SAM DUE, SAMD, STM32, etc. boards running ESP8266/ESP32-AT-command shields.**
+to support **nRF52, SAM DUE, SAMD, STM32F/L/H/G/WB/MP1, etc. boards using ESP8266/ESP32-AT-command shields.**
 
 The AVR-family boards (Mega, UNO, Nano, etc.) are **not supported** as they don't have enough memory to run Config Portal WebServer.
 
@@ -55,11 +57,11 @@ The configuration portal is captive, so it will present the configuration dialog
  4. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  5. [`Arduino SAM DUE core 1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
  6. [`Arduino SAMD core 1.8.9+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards  (Nano 33 IoT, etc.).
- 7. [`Adafruit SAMD core 1.6.3+`](https://www.adafruit.com/)  for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
- 8. [`Adafruit nRF52 v0.21.0+`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
- 9. [`Seeeduino SAMD core 1.7.9+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
+ 7. [`Adafruit SAMD core 1.6.4+`](https://www.adafruit.com/)  for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
+ 8. [`Seeeduino SAMD core 1.8.1+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
+ 9. [`Adafruit nRF52 v0.21.0+`](www.adafruit.com) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.
 10. [`ESP8266_AT_WebServer library v1.1.1+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
-11. [`FlashStorage_SAMD library v1.0.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.) and SAMD51 boards (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)
+11. [`FlashStorage_SAMD library v1.0.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) or [`Platform.io FlashStorage_SAMD library v1.0.0+`](https://platformio.org/lib/show/11242/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
 12. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
 13. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52 boards.
 14. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
@@ -226,27 +228,28 @@ These files must be copied into the directory:
 
 Whenever the above-mentioned compiler error issue is fixed with the new Arduino SAMD release, you don't need to copy the `Arduino.h` file anymore.
 
- 5. **To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards**, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.3) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.3). 
+ 5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
 
-Supposing the Adafruit SAMD core version is 1.6.3. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.6.4. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.3/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.4/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
 
 - `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
 
- 6. **To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards**, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.7.9) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.7.9). 
+ 6. ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.8.1) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.1). 
 
-Supposing the Seeeduino SAMD core version is 1.7.9. This file must be copied into the directory:
+Supposing the Seeeduino SAMD core version is 1.8.1. This file must be copied into the directory:
 
-- `~/.arduino15/packages/Seeeduino/hardware/samd/1.7.9/platform.txt`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.8.1/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
 
 - `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
+
 
 7. **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
@@ -1344,28 +1347,24 @@ Submit issues to: [ESP_AT_WiFiManager issues](https://github.com/khoih-prog/ESP_
  
 ---
 
-#### New Version v1.0.3
+### New Version v1.0.3
 
 1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
 2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
-3. Add sample Packages_Patches for STM32 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
+3. Add sample Packages_Patches for **STM32F/L/H/G/WB/MP1** (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
 4. Add Packages_Patches for other boards.
-5. Add instructions to use EspSerial/Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
-6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for Nano-33-IoT, ZERO, MKR, etc.
+5. Add instructions to use EspSerial/Serial1 on some **STM32F/L/H/G/WB/MP1** boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
+6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for **Nano-33-IoT, ZERO, MKR, etc.**
 
-#### New Version v1.0.2
+### New Version v1.0.2
 
 1. Add support to **ESP32-AT-command shield**.
 
-#### New Version v1.0.1
+### New Version v1.0.1
 
 1. Add support to **nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved **automatically in LittleFS**.
-2. Improve support to **STM32F**. Credentials to be saved **automatically in EEPROM**.
-3. Drop support to Teensy boards.
-
-##### New in v1.0.0
-
-- This is a Credentials / WiFi Connection Manager with fallback web configuration portal. Completely new to support **Teensy, SAM DUE, SAMD, STM32, etc. boards running ESP8266 AT-command shields.**
+2. Improve support to **STM32F/L/H/G/WB/MP1**. Credentials to be saved **automatically in EEPROM**.
+3. Drop support to **Teensy** boards.
 
 ---
 
