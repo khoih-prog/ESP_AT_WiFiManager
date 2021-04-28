@@ -1,23 +1,24 @@
 /****************************************************************************************************************************
-   ConfigOnStartup.ino
-   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  ConfigOnStartup.ino
+  WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
+  
+  Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
+  and from Ken Taylor https://github.com/kentaylor
+  
+  Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
+  Licensed under MIT license
+  Version: 1.1.0
 
-   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-   
-   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
-   and from Ken Taylor https://github.com/kentaylor
-
-   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
-   Licensed under MIT license
-   Version: 1.0.3
-
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      08/03/2020 Initial coding
-    1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
-    1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
-    1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      08/03/2020 Initial coding
+  1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
+  1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
+  1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
+  1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal for 60 seconds when first powered up if the boards has stored WiFi Credentials.
@@ -57,7 +58,7 @@
 
 #include "defines.h"
 
-void heartBeatPrint(void)
+void heartBeatPrint()
 {
   static int num = 1;
 
@@ -91,7 +92,7 @@ void check_status()
   }
 }
 
-void enterConfigPortal(void)
+void enterConfigPortal()
 {
   //Local intialization. Once its business is done, there is no need to keep it around
   ESP_AT_WiFiManager ESP_AT_wiFiManager;
@@ -110,18 +111,25 @@ void enterConfigPortal(void)
 
   //Check if there is stored WiFi router/password credentials.
   //If not found, device will remain in configuration mode until switched off via webserver.
-  Serial.print("Opening Config Portal. ");
+  Serial.println("Opening Config Portal.");
 
   Router_SSID = ESP_AT_wiFiManager.WiFi_SSID();
   Router_Pass = ESP_AT_wiFiManager.WiFi_Pass();
 
-  if (Router_SSID != "")
-  {
+  if ( (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
+  {    
+    if (ESP_AT_wiFiManager.connectWifi(Router_SSID, Router_Pass) == WL_CONNECTED)
+    {
+      Serial.println(F("Got stored Credentials. Try to connect first"));
+      
+      return;
+    }
+    
     ESP_AT_wiFiManager.setConfigPortalTimeout(60); //If no access point name has been previously entered disable timeout.
-    Serial.println(F("Got stored Credentials. Timeout 60s"));
+    Serial.println(F("Got stored Credentials but can't connect. Timeout 60s"));
   }
   else
-    Serial.println(F("No stored Credentials. No timeout"));
+    Serial.println(F("No stored or not valid Credentials. No timeout"));
 
   // SSID to uppercase
   ssid.toUpperCase();
@@ -156,6 +164,8 @@ void setup()
 #else
   Serial.println("\nStart ConfigOnStartup with ESP8266-AT WiFi module on " + String(BOARD_NAME));
 #endif
+
+  Serial.println(ESP_AT_WIFIMANAGER_VERSION);
 
   // initialize serial for ESP module
   EspSerial.begin(115200);

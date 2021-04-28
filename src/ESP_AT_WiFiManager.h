@@ -1,32 +1,35 @@
-/****************************************************************************************************************************
-   ESP_AT_WiFiManager.h
-   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+/********************************************************************************************************************************
+  ESP_AT_WiFiManager.h
+  WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
 
-   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-   
-   Inspired by:
-   http://www.esp8266.com/viewtopic.php?f=29&t=2520
-   https://github.com/chriscook8/esp-arduino-apboot
-   https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
 
-   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
-   and from Ken Taylor https://github.com/kentaylor
+  Inspired by:
+  http://www.esp8266.com/viewtopic.php?f=29&t=2520
+  https://github.com/chriscook8/esp-arduino-apboot
+  https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
 
-   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
-   Licensed under MIT license
-   Version: 1.0.3
+  Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
+  and from Ken Taylor https://github.com/kentaylor
 
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      08/03/2020 Initial coding
-    1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
-    1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
-    1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
- *****************************************************************************************************************************/
+  Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
+  Licensed under MIT license
+  Version: 1.1.0
+
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      08/03/2020 Initial coding
+  1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
+  1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
+  1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
+  1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
+ *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_h
 #define ESP_AT_WiFiManager_h
+
+#define ESP_AT_WIFIMANAGER_VERSION     "ESP_AT_WiFiManager v1.1.0"
 
 #if !defined(DEBUG_WIFIMGR)
   #define DEBUG_WIFIMGR      false
@@ -48,14 +51,14 @@
   #warning Use nFR52 architecture from ESP8266_AT_WiFiManager
 #endif
 
-#if  ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
-       defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
-       defined(STM32WB) || defined(STM32MP1) )
+#if  ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+       defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+       defined(STM32WB) || defined(STM32MP1) || defined(STM32L5) )
   #if defined(STM32F0)
-  #error STMF0 not supported
+    #error STMF0 not supported
   #endif
   #if defined(ESP8266_AT_USE_STM32)
-  #undef ESP8266_AT_USE_STM32
+    #undef ESP8266_AT_USE_STM32
   #endif
   #define ESP8266_AT_USE_STM32      true
 #endif
@@ -168,12 +171,20 @@ class ESP_AT_WMParameter
     friend class ESP_AT_WiFiManager;
 };
 
+#define SSID_MAX_LEN              32
+//From v1.0.3, WPA2 passwords can be min 8 and max 63 characters long.
+#define PASSWORD_MIN_LEN          8
+#define PASSWORD_MAX_LEN          64
+
+#define HEADER_MAX_LEN            16
+#define RFC952_HOSTNAME_MAXLEN    24
+
 typedef struct _ESP_AT_WM_Configuration
 {
-  char header         [16];
-  char wifi_ssid      [32];
-  char wifi_pw        [32];
-  char host_name      [24];
+  char header         [HEADER_MAX_LEN];
+  char wifi_ssid      [SSID_MAX_LEN];
+  char wifi_pw        [PASSWORD_MAX_LEN];
+  char host_name      [RFC952_HOSTNAME_MAXLEN];
   int  checkSum;
 } ESP_AT_WM_Configuration;
 
@@ -217,7 +228,7 @@ class ESP_AT_WiFiManager
 {
   public:
 
-    ESP_AT_WiFiManager(void);
+    ESP_AT_WiFiManager();
 
     ~ESP_AT_WiFiManager();
 
@@ -255,10 +266,10 @@ class ESP_AT_WiFiManager
     //called when AP mode and config portal is started
     void          setAPCallback(void(*func)(ESP_AT_WiFiManager*));
     //called when settings have been changed and connection was successful
-    void          setSaveConfigCallback(void(*func)(void));
+    void          setSaveConfigCallback(void(*func)());
 
     //adds a custom parameter
-    bool        addParameter(ESP_AT_WMParameter *p);
+    bool          addParameter(ESP_AT_WMParameter *p);
 
     //if this is set, it will exit after config, even if connection is unsucessful.
     void          setBreakAfterConfig(bool shouldBreak);
@@ -272,12 +283,14 @@ class ESP_AT_WiFiManager
     int           scanWifiNetworks(int **indicesptr);
 
     // return SSID of router in STA mode got from config portal. NULL if no user's input //KH
-    String        getSSID(void) {
+    String        getSSID() 
+    {
       return WiFi_SSID();
     }
 
     // return password of router in STA mode got from config portal. NULL if no user's input //KH
-    String        getPW(void) {
+    String        getPW() 
+    {
       return WiFi_Pass();
     }
 
@@ -289,7 +302,7 @@ class ESP_AT_WiFiManager
 
     const char*   getStatus(int status);
 
-    String WiFi_SSID(void)
+    String WiFi_SSID()
     {
       if (!hadConfigData)
         getConfigData();
@@ -300,7 +313,7 @@ class ESP_AT_WiFiManager
         return "";
     }
 
-    String WiFi_Pass(void)
+    String WiFi_Pass()
     {
       if (!hadConfigData)
         getConfigData();
@@ -316,14 +329,24 @@ class ESP_AT_WiFiManager
       return (String(address[0]) + "." + address[1] + "." + address[2] + "." + address[3]);
     }
 
-    void resetBoard(void);
+    void resetBoard();
 
+    #define MAX_WIFI_CHANNEL      11
+    
     void setAPChannel(int apChannel)
     {
-      _apChannel = apChannel;
+      // Use random channel if  AP_channel == 0     
+      if (apChannel == 0)
+        _apChannel = (millis() % MAX_WIFI_CHANNEL) + 1;
+      else
+        _apChannel = apChannel;
     }
 
-    void clearConfigData(void);
+    void clearConfigData();
+    
+    int  connectWifi(String ssid, String pass);
+    
+    bool isWiFiConfigValid();
     
   private:
 
@@ -358,14 +381,13 @@ class ESP_AT_WiFiManager
 
     int           _paramsCount = 0;
     int           _minimumQuality = -1;
-    bool       _removeDuplicateAPs = true;
-    bool       _shouldBreakAfterConfig = false;
+    bool          _removeDuplicateAPs = true;
+    bool          _shouldBreakAfterConfig = false;
 
     const char*   _customHeadElement = "";
 
     int           status;
 
-    int           connectWifi(String ssid, String pass);
     uint8_t       waitForConnectResult();
 
     void          handleRoot();
@@ -381,15 +403,15 @@ class ESP_AT_WiFiManager
 
     //helpers
     int           getRSSIasQuality(int RSSI);
-    bool       isIp(String str);
+    bool          isIp(String str);
     String        toStringIp(IPAddress ip);
-
-    bool       connect;
-    bool       stopConfigPortal = false;
-    bool       _debug = false;     //true;
+    
+    bool          connect;
+    bool          stopConfigPortal = false;
+    bool          _debug = false;     //true;
 
     void(*_apcallback)(ESP_AT_WiFiManager*) = NULL;
-    void(*_savecallback)(void) = NULL;
+    void(*_savecallback)() = NULL;
 
     int                    _max_params;
     ESP_AT_WMParameter** _params;
@@ -406,11 +428,11 @@ class ESP_AT_WiFiManager
       return false;
     }
 
-    void  displayConfigData(void);
-    int   calcChecksum(void);
-    void  loadConfigData(void);
-    bool  getConfigData(void);
-    void  saveConfigData(void);
+    void  displayConfigData();
+    int   calcChecksum();
+    void  loadConfigData();
+    bool  getConfigData();
+    void  saveConfigData();
 };
 
 #if DEBUG_WIFIMGR

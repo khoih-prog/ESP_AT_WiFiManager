@@ -1,23 +1,15 @@
 /****************************************************************************************************************************
-   defines.h
-   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-
-   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-   
-   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
-   and from Ken Taylor https://github.com/kentaylor
-
-   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
-   Licensed under MIT license
-   Version: 1.0.3
-
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      08/03/2020 Initial coding
-    1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
-    1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
-    1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.  
+  defines.h
+  WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
+  
+  Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
+  and from Ken Taylor https://github.com/kentaylor
+  
+  Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
+  Licensed under MIT license
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -59,9 +51,9 @@
   #define ESP8266_AT_USE_SAM_DUE      true
 #endif
 
-#if  ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
-       defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
-       defined(STM32WB) || defined(STM32MP1) )
+#if  ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+       defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+       defined(STM32WB) || defined(STM32MP1) || defined(STM32L5) )
   #if defined(ESP8266_AT_USE_STM32)
     #undef ESP8266_AT_USE_STM32
   #endif
@@ -288,6 +280,9 @@
   #elif defined(STM32L4)
     #warning STM32L4 board selected
     #define BOARD_TYPE  "STM32L4"
+  #elif defined(STM32L5)
+    #warning STM32L5 board selected
+    #define BOARD_TYPE  "STM32L5"  
   #elif defined(STM32H7)
     #warning STM32H7 board selected
     #define BOARD_TYPE  "STM32H7"

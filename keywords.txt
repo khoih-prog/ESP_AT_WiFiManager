@@ -48,7 +48,8 @@ WiFi_Pass KEYWORD2
 IPAddressToString	KEYWORD2
 resetBoard KEYWORD2
 setAPChannel  KEYWORD2
-
+connectWifi KEYWORD2
+isWiFiConfigValid KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

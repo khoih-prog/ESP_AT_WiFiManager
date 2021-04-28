@@ -1,28 +1,35 @@
-/****************************************************************************************************************************
-   ESP_AT_WiFiManager-impl.h
-   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+/********************************************************************************************************************************
+  ESP_AT_WiFiManager-impl.h
+  WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
 
-   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-   
-   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
-   and from Ken Taylor https://github.com/kentaylor
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
+  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
 
-   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
-   Licensed under MIT license
-   Version: 1.0.3
+  Inspired by:
+  http://www.esp8266.com/viewtopic.php?f=29&t=2520
+  https://github.com/chriscook8/esp-arduino-apboot
+  https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
 
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      08/03/2020 Initial coding
-    1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
-    1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
-    1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
- *****************************************************************************************************************************/
+  Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
+  and from Ken Taylor https://github.com/kentaylor
+
+  Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
+  Licensed under MIT license
+  Version: 1.1.0
+
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      08/03/2020 Initial coding
+  1.0.1   K Hoang      22/06/2020 Add support to nRF52 boards, such as AdaFruit Feather nRF52832, NINA_B302_ublox, etc.
+  1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
+  1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
+  1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
+ *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_impl_h
 #define ESP_AT_WiFiManager_impl_h
 
+//////////////////////////////////////////////
 
 ESP_AT_WMParameter::ESP_AT_WMParameter(const char *custom)
 {
@@ -35,20 +42,28 @@ ESP_AT_WMParameter::ESP_AT_WMParameter(const char *custom)
   _customHTML = custom;
 }
 
+//////////////////////////////////////////////
+
 ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length)
 {
   init(id, placeholder, defaultValue, length, "", WFM_LABEL_BEFORE);
 }
+
+//////////////////////////////////////////////
 
 ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom)
 {
   init(id, placeholder, defaultValue, length, custom, WFM_LABEL_BEFORE);
 }
 
+//////////////////////////////////////////////
+
 ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement)
 {
   init(id, placeholder, defaultValue, length, custom, labelPlacement);
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WMParameter::init(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement)
 {
@@ -71,6 +86,8 @@ void ESP_AT_WMParameter::init(const char *id, const char *placeholder, const cha
   _customHTML = custom;
 }
 
+//////////////////////////////////////////////
+
 ESP_AT_WMParameter::~ESP_AT_WMParameter()
 {
   if (_value != NULL)
@@ -79,34 +96,49 @@ ESP_AT_WMParameter::~ESP_AT_WMParameter()
   }
 }
 
+//////////////////////////////////////////////
+
 const char* ESP_AT_WMParameter::getValue()
 {
   return _value;
 }
 
+//////////////////////////////////////////////
+
 const char* ESP_AT_WMParameter::getID()
 {
   return _id;
 }
+
+//////////////////////////////////////////////
+
 const char* ESP_AT_WMParameter::getPlaceholder()
 {
   return _placeholder;
 }
+
+//////////////////////////////////////////////
 
 int ESP_AT_WMParameter::getValueLength()
 {
   return _length;
 }
 
+//////////////////////////////////////////////
+
 int ESP_AT_WMParameter::getLabelPlacement()
 {
   return _labelPlacement;
 }
+
+//////////////////////////////////////////////
+
 const char* ESP_AT_WMParameter::getCustomHTML()
 {
   return _customHTML;
 }
 
+//////////////////////////////////////////////
 
 /**
  * [getParameters description]
@@ -116,6 +148,7 @@ ESP_AT_WMParameter** ESP_AT_WiFiManager::getParameters() {
   return _params;
 }
 
+//////////////////////////////////////////////
 
 /**
  * [getParametersCount description]
@@ -125,14 +158,17 @@ int ESP_AT_WiFiManager::getParametersCount() {
   return _paramsCount;
 }
 
+//////////////////////////////////////////////
 
-ESP_AT_WiFiManager::ESP_AT_WiFiManager(void)
+ESP_AT_WiFiManager::ESP_AT_WiFiManager()
 {
   _max_params = WIFI_MANAGER_MAX_PARAMS;
   _params = (ESP_AT_WMParameter**)malloc(_max_params * sizeof(ESP_AT_WMParameter*));
 
   networkIndices = NULL;
 }
+
+//////////////////////////////////////////////
 
 ESP_AT_WiFiManager::~ESP_AT_WiFiManager()
 {
@@ -146,6 +182,8 @@ ESP_AT_WiFiManager::~ESP_AT_WiFiManager()
     free(networkIndices); //indices array no longer required so free memory
   }
 }
+
+//////////////////////////////////////////////
 
 bool ESP_AT_WiFiManager::addParameter(ESP_AT_WMParameter *p)
 {
@@ -170,8 +208,11 @@ bool ESP_AT_WiFiManager::addParameter(ESP_AT_WMParameter *p)
   _params[_paramsCount] = p;
   _paramsCount++;
   DEBUG_WM2(F("Adding param "), p->getID());
+  
   return true;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::setupConfigPortal()
 {
@@ -250,12 +291,16 @@ void ESP_AT_WiFiManager::setupConfigPortal()
 
 }
 
+//////////////////////////////////////////////
+
 bool ESP_AT_WiFiManager::autoConnect()
 {
   String ssid = "ESP_AT_ABCDEF";
 
   return autoConnect(ssid.c_str(), NULL);
 }
+
+//////////////////////////////////////////////
 
 /* This is not very useful as there has been an assumption that device has to be
 told to connect but Wifi already does it's best to connect in background. Calling this
@@ -285,6 +330,8 @@ bool ESP_AT_WiFiManager::autoConnect(char const *apName, char const *apPassword)
   return startConfigPortal(apName, apPassword);
 }
 
+//////////////////////////////////////////////
+
 bool  ESP_AT_WiFiManager::startConfigPortal()
 {
   String ssid = "ESP_AT_ABCDEF";
@@ -293,6 +340,8 @@ bool  ESP_AT_WiFiManager::startConfigPortal()
   
   return startConfigPortal(ssid.c_str(), NULL);
 }
+
+//////////////////////////////////////////////
 
 bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPassword)
 {
@@ -340,6 +389,7 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
           //todo: check if any custom parameters actually exist, and check if they really changed maybe
           _savecallback();
         }
+        
         break;
       }
 
@@ -352,6 +402,7 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
           //todo: check if any custom parameters actually exist, and check if they really changed maybe
           _savecallback();
         }
+        
         break;
       }
     }
@@ -362,6 +413,7 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
       stopConfigPortal = false;
       break;
     }
+    
     yield();
   }
 
@@ -389,6 +441,8 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
   
   return  WiFi.status() == WL_CONNECTED;
 }
+
+//////////////////////////////////////////////
 
 int ESP_AT_WiFiManager::connectWifi(String ssid, String pass)
 {
@@ -428,6 +482,8 @@ int ESP_AT_WiFiManager::connectWifi(String ssid, String pass)
   return connRes;
 }
 
+//////////////////////////////////////////////
+
 uint8_t ESP_AT_WiFiManager::waitForConnectResult()
 {
   if (_connectTimeout == 0)
@@ -444,6 +500,7 @@ uint8_t ESP_AT_WiFiManager::waitForConnectResult()
     while (keepConnecting)
     {
       status = WiFi.status();
+      
       if (millis() > start + _connectTimeout)
       {
         keepConnecting = false;
@@ -454,11 +511,15 @@ uint8_t ESP_AT_WiFiManager::waitForConnectResult()
       {
         keepConnecting = false;
       }
+      
       delay(100);
     }
+    
     return status;
   }
 }
+
+//////////////////////////////////////////////
 
 //Convenient for debugging but wasteful of program space.
 //Remove if short of space
@@ -479,15 +540,21 @@ const char* ESP_AT_WiFiManager::getStatus(int status)
   }
 }
 
+//////////////////////////////////////////////
+
 String ESP_AT_WiFiManager::getConfigPortalSSID()
 {
   return _apName;
 }
 
+//////////////////////////////////////////////
+
 String ESP_AT_WiFiManager::getConfigPortalPW()
 {
   return _apPassword;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::resetSettings()
 {
@@ -499,45 +566,63 @@ void ESP_AT_WiFiManager::resetSettings()
   return;
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::setTimeout(unsigned long seconds)
 {
   setConfigPortalTimeout(seconds);
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::setConfigPortalTimeout(unsigned long seconds)
 {
   _configPortalTimeout = seconds * 1000;
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::setConnectTimeout(unsigned long seconds)
 {
   _connectTimeout = seconds * 1000;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::setDebugOutput(bool debug)
 {
   _debug = debug;
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::setAPStaticIPConfig(IPAddress ip)
 {
   _ap_static_ip = ip;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::setSTAStaticIPConfig(IPAddress ip)
 {
   _sta_static_ip = ip;
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::setMinimumSignalQuality(int quality)
 {
   _minimumQuality = quality;
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::setBreakAfterConfig(bool shouldBreak)
 {
   _shouldBreakAfterConfig = shouldBreak;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::reportStatus(String &page)
 {
@@ -564,6 +649,8 @@ void ESP_AT_WiFiManager::reportStatus(String &page)
     page += F("No AP configured.");
   }
 }
+
+//////////////////////////////////////////////
 
 /** Handle root or redirect to captive portal */
 void ESP_AT_WiFiManager::handleRoot()
@@ -623,6 +710,8 @@ void ESP_AT_WiFiManager::handleRoot()
   #endif
 
 }
+
+//////////////////////////////////////////////
 
 /** Wifi config page handler */
 void ESP_AT_WiFiManager::handleWifi()
@@ -759,6 +848,8 @@ void ESP_AT_WiFiManager::handleWifi()
   DEBUG_WM(F("Sent config page"));
 }
 
+//////////////////////////////////////////////
+
 /** Handle the WLAN save form and redirect to WLAN config page again */
 void ESP_AT_WiFiManager::handleWifiSave()
 {
@@ -856,6 +947,8 @@ void ESP_AT_WiFiManager::handleWifiSave()
   _configPortalTimeout = DEFAULT_PORTAL_TIMEOUT;
 }
 
+//////////////////////////////////////////////
+
 /** Handle shut down the server page */
 void ESP_AT_WiFiManager::handleServerClose()
 {
@@ -883,6 +976,7 @@ void ESP_AT_WiFiManager::handleServerClose()
   page += F("</b><br>");
   
   page += F("IP: <b>");
+  
   if (_sta_static_ip)
   {
     page += IPAddressToString(_sta_static_ip);
@@ -908,6 +1002,8 @@ void ESP_AT_WiFiManager::handleServerClose()
   // Restore when Press Save WiFi
   _configPortalTimeout = DEFAULT_PORTAL_TIMEOUT;
 }
+
+//////////////////////////////////////////////
 
 /** Handle the info page */
 void ESP_AT_WiFiManager::handleInfo()
@@ -980,6 +1076,8 @@ void ESP_AT_WiFiManager::handleInfo()
   DEBUG_WM(F("Sent info page"));
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::handleNotFound()
 {
   String message = "File Not Found\n\n";
@@ -1023,28 +1121,38 @@ void ESP_AT_WiFiManager::handleNotFound()
   #endif
 }
 
+//////////////////////////////////////////////
+
 //start up config portal callback
 void ESP_AT_WiFiManager::setAPCallback(void(*func)(ESP_AT_WiFiManager* myWiFiManager))
 {
   _apcallback = func;
 }
 
+//////////////////////////////////////////////
+
 //start up save config callback
-void ESP_AT_WiFiManager::setSaveConfigCallback(void(*func)(void))
+void ESP_AT_WiFiManager::setSaveConfigCallback(void(*func)())
 {
   _savecallback = func;
 }
+
+//////////////////////////////////////////////
 
 //sets a custom element to add to head, like a new style tag
 void ESP_AT_WiFiManager::setCustomHeadElement(const char* element) {
   _customHeadElement = element;
 }
 
+//////////////////////////////////////////////
+
 //if this is true, remove duplicated Access Points - defaut true
 void ESP_AT_WiFiManager::setRemoveDuplicateAPs(bool removeDuplicates)
 {
   _removeDuplicateAPs = removeDuplicates;
 }
+
+//////////////////////////////////////////////
 
 //Scan for WiFiNetworks in range and sort by signal strength
 //space for indices array allocated on the heap and should be freed when no longer required
@@ -1140,6 +1248,8 @@ int ESP_AT_WiFiManager::scanWifiNetworks(int **indicesptr)
   }
 }
 
+//////////////////////////////////////////////
+
 template <typename Generic>
 void ESP_AT_WiFiManager::DEBUG_WM(Generic text)
 {
@@ -1149,6 +1259,8 @@ void ESP_AT_WiFiManager::DEBUG_WM(Generic text)
     ESP_AT_DEBUG_OUTPUT.println(text);
   }
 }
+
+//////////////////////////////////////////////
 
 int ESP_AT_WiFiManager::getRSSIasQuality(int RSSI)
 {
@@ -1170,6 +1282,8 @@ int ESP_AT_WiFiManager::getRSSIasQuality(int RSSI)
   return quality;
 }
 
+//////////////////////////////////////////////
+
 /** Is this an IP? */
 bool ESP_AT_WiFiManager::isIp(String str)
 {
@@ -1182,13 +1296,17 @@ bool ESP_AT_WiFiManager::isIp(String str)
       return false;
     }
   }
+  
   return true;
 }
+
+//////////////////////////////////////////////
 
 /** IP to String? */
 String ESP_AT_WiFiManager::toStringIp(IPAddress ip)
 {
   String res = "";
+  
   for (int i = 0; i < 3; i++)
   {
     res += String((ip >> (8 * i)) & 0xFF) + ".";
@@ -1199,22 +1317,46 @@ String ESP_AT_WiFiManager::toStringIp(IPAddress ip)
   return res;
 }
 
-void ESP_AT_WiFiManager::displayConfigData(void)
+//////////////////////////////////////////////
+
+void ESP_AT_WiFiManager::displayConfigData()
 {
   DEBUG_WM6(F("Header = "), ESP_AT_WM_Config.header, F(", SSID = "), ESP_AT_WM_Config.wifi_ssid,
              F(", PW = "),   ESP_AT_WM_Config.wifi_pw);
   DEBUG_WM2(F("Host Name = "), ESP_AT_WM_Config.host_name);
 }
 
-int ESP_AT_WiFiManager::calcChecksum(void)
+//////////////////////////////////////////////
+
+int ESP_AT_WiFiManager::calcChecksum()
 {
   int checkSum = 0;
+  
   for (uint16_t index = 0; index < (sizeof(ESP_AT_WM_Config) - sizeof(ESP_AT_WM_Config.checkSum)); index++)
   {
     checkSum += * ( ( (byte*) &ESP_AT_WM_Config ) + index);
   }
 
   return checkSum;
+}
+
+//////////////////////////////////////////////
+    
+bool ESP_AT_WiFiManager::isWiFiConfigValid()
+{
+  // If PWD length < 8 (as required by standard) => invalid set
+  // Need both sets of valid SSID/PWD
+  if ( strlen(ESP_AT_WM_Config.wifi_pw) < PASSWORD_MIN_LEN )
+  {
+    // If SSID, PW = NULL or len < 8, set the flag
+    DEBUG_WM2(F("Invalid Stored Config Data : WiFi PWD len < 8. PWD = "), ESP_AT_WM_Config.wifi_pw);
+       
+    hadConfigData = false;
+    
+    return false;
+  }
+  
+  return true;
 }
 
 #endif    //ESP_AT_WiFiManager-impl_h

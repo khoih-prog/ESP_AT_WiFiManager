@@ -9,26 +9,93 @@
 ---
 ---
 
-### New Version v1.0.3
+## Table of Contents
 
-1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
-2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
-3. Add sample Packages_Patches for **STM32F/L/H/G/WB/MP1** (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
-4. Add Packages_Patches for other boards.
-5. Add instructions to use EspSerial/Serial1 on some **STM32F/L/H/G/WB/MP1** boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
-6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for **Nano-33-IoT, ZERO, MKR, etc.**
-
-### New Version v1.0.2
-
-1. Add support to **ESP32-AT-command shield**.
-
-### New Version v1.0.1
-
-1. Add support to **nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved **automatically in LittleFS**.
-2. Improve support to **STM32F/L/H/G/WB/MP1**. Credentials to be saved **automatically in EEPROM**.
-3. Drop support to **Teensy** boards.
+* [Why do we need this ESP_AT_WiFiManager library](#why-do-we-need-this-esp_at_wifimanager-library)
+  * [Features](#features)
+  * [Currently supported Boards](#currently-supported-boards)
+* [Changelog](#changelog)
+  * [Major Release v1.1.0](#major-release-v110)
+  * [Release v1.0.3](#release-v103)
+  * [Release v1.0.2](#release-v102)
+  * [Release v1.0.1](#release-v101)
+* [Prerequisites](#prerequisites)
+* [Important Notes about AT Firmwares](#important-notes-about-at-firmwares)
+  * [1. Firmwares tested OK with ESP8266 AT shields](#1-firmwares-tested-ok-with-esp8266-at-shields)
+  * [2. Firmwares tested OK with ESP32 AT shields](#2-firmwares-tested-ok-with-esp32-at-shields)
+* [Installation](#installation)
+  * [Use Arduino Library Manager](#use-arduino-library-manager)
+  * [Manual Install](#manual-install)
+  * [VS Code & PlatformIO](#vs-code--platformio)
+* [Packages' Patches](#packages-patches)
+  * [1. For Adafruit nRF52840 and nRF52832 boards](#1-for-adafruit-nRF52840-and-nRF52832-boards)
+  * [2. For Teensy boards](#2-for-teensy-boards)
+  * [3. For Arduino SAM DUE boards](#3-for-arduino-sam-due-boards)
+  * [4. For Arduino SAMD boards](#4-for-arduino-samd-boards)
+      * [For core version v1.8.10+](#for-core-version-v1810)
+      * [For core version v1.8.9-](#for-core-version-v189-)
+  * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
+  * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
+  * [7. For STM32 boards](#7-for-stm32-boards) 
+    * [7.1 For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
+    * [7.2 For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
+* [How It Works](#how-it-works)
+* [How to use](#how-to-use)
+  * [1. Basic usage](#1-basic-usage)
+  * [2. To open Config Portal](#2-to-open-config-portal)
+  * [3. To use different AP WiFi Channel](#3-to-use-different-ap-wifi-channel)
+  * [4. To use different static AP IP from default](#4-to-use-different-static-ap-ip-from-default)
+  * [5. To use default AP SSID ESP_AT_XXXXXX](#5-to-use-default-ap-ssid-esp_at_xxxxxx)
+  * [6. To use personalized AP SSID and Password](#6-to-use-personalized-ap-ssid-and-password)
+* [Examples](#examples)
+  * [ 1. ConfigOnSwitch](examples/ConfigOnSwitch)
+  * [ 2. ConfigOnStartup](examples/ConfigOnStartup) 
+  * [ 3. AutoConnect](examples/AutoConnect)
+  * [ 4. AutoConnectWithFeedback](examples/AutoConnectWithFeedback)
+* [So, how it works?](#so-how-it-works)
+* [Documentation](#documentation)
+  * [1. Password protect the configuration Access Point](#1-password-protect-the-configuration-access-point)
+  * [2. Configuration Portal Timeout](#2-configuration-portal-timeout)
+* [Custom Configuration](#custom-configuration)
+  * [1. Custom Parameters](#1-custom-parameters)
+  * [2. Custom IP Configuration](#2-custom-ip-configuration)
+  * [3. Custom Parameters](#3-custom-access-point-ip-configuration)
+  * [4. Custom Station (client) Static IP Configuration](#4-custom-station-client-static-ip-configuration)
+  * [5. Custom HTML, CSS, Javascript](#5-custom-html-css-javascript)
+    * [5.1 Inject custom head element](#51-inject-custom-head-element)
+    * [5.2 Inject a custom bit of html in the configuration form](#52-inject-a-custom-bit-of-html-in-the-configuration-form)
+    * [5.3 Inject a custom bit of html in a configuration form element](#53-inject-a-custom-bit-of-html-in-a-configuration-form-element)
+  * [6. Filter Networks](#6-filter-networks)
+* [Example ConfigOnSwitch](#example-configonswitch)
+  * [1. File ConfigOnSwitch.ino](#1-file-configonswitchino)
+  * [2. File defines.h](#2-file-definesh)
+* [Debug Terminal Output Samples](#debug-terminal-output-samples)
+  * [1. ConfigOnSwitch on Adafruit Itsy-Bitsy nRF52840 with ESP8266-AT shield](#1-configonswitch-on-adafruit-itsy-bitsy-nrf52840-with-esp8266-at-shield)
+    * [1.1 Enter Config Portal](#11-enter-config-portal)
+    * [1.2 Click `Save`](#12-click-save)
+  * [2. ConfigOnStartup on SAM-DUE with ESP32-AT shield](#2-configonstartup-on-sam-due-with-esp32-at-shield)
+  * [3. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield](#3-configonstartup-on-stm32-nucleo-144-nucleo_f767zi-with-esp8266-at-shield)
+  * [4. ConfigOnStartup on Seeeduino SEEED_XIAO_M0 with ESP8266-AT shield](#1-configonstartup-on-seeeduino-seeed_xiao_m0-with-esp8266-at-shield)
+  * [5. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield  with invalid data](#5-configonstartup-on-stm32-nucleo-144-nucleo_f767zi-with-esp8266-at-shield-with-invalid-data)
+    * [5.1 Data OK => No Config Portal](#51-data-ok--no-config-portal)
+    * [5.2 Valid Data but no connection => Config Portal](#52-valid-data-but-no-connection--config-Portal)
+* [Debug](#debug)
+* [Troubleshooting](#troubleshooting)
+* [Releases](#releases)
+* [Issues](#issues)
+* [TO DO](#to-do)
+* [DONE](#done)
+* [Contributions and Thanks](#contributions-and-thanks)
+* [Contributing](#contributing)
+* [License](#license)
+* [Copyright](#copyright)
 
 ---
+---
+
+### Why do we need this [ESP_AT_WiFiManager library](https://github.com/khoih-prog/ESP_AT_WiFiManager)
+
+#### Features
 
 This [**ESP_AT_WiFiManager library**](https://github.com/khoih-prog/ESP_AT_WiFiManager) is based on, modified, bug-fixed and improved from:
 
@@ -44,7 +111,76 @@ This is a Credentials / WiFi Connection Manager with fallback web configuration 
 
 The web configuration portal, served from the `ESP8266/ESP32-AT-command shields` is operating as an access point (AP) with configurable static IP address or use default IP Address of 192.168.4.1
 
-The configuration portal is captive, so it will present the configuration dialogue regardless of the web address selected, excluding https requests.
+You can also specify static AP and STA IP. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Credentials are saved in EEPROM, [`FlashStorage_SAMD`](https://github.com/khoih-prog/FlashStorage_SAMD), [`FlashStorage_STM32`](https://github.com/khoih-prog/FlashStorage_STM32), [`DueFlashStorage`](https://github.com/sebnil/DueFlashStorage) or nRF52 LittleFS.
+
+---
+
+#### Currently Supported Boards
+
+This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiManager) currently supports these following boards:
+
+ 1. **nRF52 boards**, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.**
+ 
+ 2. **SAM DUE**
+ 
+ 3. **SAMD21**
+  - Arduino SAMD21: ZERO, MKRs, NANO_33_IOT, etc.
+  - Adafruit SAMD21 (M0): ItsyBitsy M0, Feather M0, Feather M0 Express, Metro M0 Express, Circuit Playground Express, Trinket M0, PIRkey, Hallowing M0, Crickit M0, etc.
+  - Seeeduino: LoRaWAN, Zero, Femto M0, XIAO M0, Wio GPS Board, etc.
+  
+ 4. **SAMD51**
+  - Adafruit SAMD51 (M4): Metro M4, Grand Central M4, ItsyBitsy M4, Feather M4 Express, Trellis M4, Metro M4 AirLift Lite, MONSTER M4SK Express, Hallowing M4, etc.
+  - Seeeduino: Wio Terminal, Grove UI Wireless
+  
+ 5. **Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC)**
+ 
+ 6. **STM32F/L/H/G/WB/MP1 boards (with 64+K Flash)**
+
+- Nucleo-144
+- Nucleo-64
+- Discovery
+- Generic STM32F0, STM32F1, STM32F2, STM32F3, STM32F4, STM32F7 (with 64+K Flash): x8 and up
+- STM32L0, STM32L1, STM32L4, **STM32L5**
+- STM32G0, STM32G4
+- STM32H7
+- STM32WB
+- STM32MP1
+- LoRa boards
+- 3-D printer boards
+- Generic Flight Controllers
+- Midatronics boards
+ 
+---
+---
+
+## Changelog
+
+### Major Release v1.1.0
+
+1. Use new efficient [**FlashStorage_STM32** library](https://github.com/khoih-prog/FlashStorage_STM32). 
+2. Add support to new **STM32 core v2.0.0** and STM32L5
+3. Permit auto-connect without waiting for Config Portal if stored data is valid and WiFi test connection is OK.
+4. Update examples with new features
+
+### Release v1.0.3
+
+1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
+2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
+3. Add sample Packages_Patches for **STM32F/L/H/G/WB/MP1** (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
+4. Add Packages_Patches for other boards.
+5. Add instructions to use EspSerial/Serial1 on some **STM32F/L/H/G/WB/MP1** boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
+6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for **Nano-33-IoT, ZERO, MKR, etc.**
+
+### Release v1.0.2
+
+1. Add support to **ESP32-AT-command shield**.
+
+### Release v1.0.1
+
+1. Add support to **nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved **automatically in LittleFS**.
+2. Improve support to **STM32F/L/H/G/WB/MP1**. Credentials to be saved **automatically in EEPROM**.
+3. Drop support to **Teensy** boards.
+
 
 ---
 ---
@@ -53,26 +189,28 @@ The configuration portal is captive, so it will present the configuration dialog
 
  1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. [`Arduino AVR core 1.8.3+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
- 3. [`Arduino Core for STM32 v1.9.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.). [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+ 3. [`Arduino Core for STM32 v2.0.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.). [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
  4. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  5. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  6. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 7. [`Adafruit SAMD core 1.6.5+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 7. [`Adafruit SAMD core 1.6.7+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  8. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  9. [`Adafruit nRF52 v0.21.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
 10. [`ESP8266_AT_WebServer library v1.1.2+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
 11. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest). Or [`Platform.io FlashStorage_SAMD library v1.0.0+`](https://platformio.org/lib/show/11242/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
-12. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
-13. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52 boards.
-14. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
-15. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
-16. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
+12. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
+13. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
+14. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52 boards.
+15. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+16. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+17. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
 
 ---
 
 ### Important Notes about AT Firmwares
 
-1. Tested OK with for ESP8266-AT shields:
+### 1. Firmwares tested OK with ESP8266 AT shields
+
   - [`Ai-Thinker AT Firmware v1.5.4`](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/AT_Firmwares/At_firmware_bin1.54.zip)
   
     ```
@@ -99,7 +237,8 @@ The configuration portal is captive, so it will present the configuration dialog
     ```
   
   
-2. Tested OK with for ESP32-AT shields:
+### 2. Firmwares tested OK with ESP32 AT shields
+
   - [`AT version_2.1.0.0_dev`](https://github.com/khoih-prog/ESP8266_AT_WebServer/blob/master/AT_Firmwares/AT_version_2.1.0.0_dev.zip)
     
     ```
@@ -158,6 +297,7 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 
+---
 ---
 
 ### Packages' Patches
@@ -222,7 +362,7 @@ This file must be copied into the directory:
  
  ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
  
-#### For core version v1.8.11+
+#### For core version v1.8.10+
 
 Supposing the Arduino SAMD version is 1.8.11. Now only one file must be copied into the directory:
 
@@ -259,11 +399,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.7) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.7). 
 
-Supposing the Adafruit SAMD core version is 1.6.4. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.6.7. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.4/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.7/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -284,6 +424,30 @@ This file must be copied into the directory:
 - `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
 
 #### 7. For STM32 boards
+
+#### 7.1 For STM32 boards to use LAN8720
+
+To use LAN8720 on some STM32 boards 
+
+- **Nucleo-144 (F429ZI, NUCLEO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG)**
+- **Discovery (DISCO_F746NG)**
+- **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
+
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system) to overwrite the old files.
+
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F4xx/stm32f4xx_hal_conf_default.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F7xx/stm32f7xx_hal_conf_default.h
+
+
+#### 7.2 For STM32 boards to use Serial1
 
 **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
@@ -312,10 +476,14 @@ theses files must be copied into the corresponding directory:
 - The `ESP8266/ESP32-AT shield` WiFi Config Portal network and Web Server will shutdown to return control to the sketch code.
 
 ---
+---
 
 ### How to use
 
+#### 1. Basic usage
+
 - Include in your sketch
+
 ```cpp
 
 // Select depending on board
@@ -346,16 +514,28 @@ const int LOCAL_PIN_LED = 13; // Pin 13, Controls the onboard LED.
 #define LED_OFF   LOW
 ```
 
+#### 2. To open Config Portal
+
 - When you want to open a config portal, just add
 
 ```cpp
 ESP_AT_WiFiManager ESP_AT_wiFiManager;
 ```
 
+#### 3. To use different AP WiFi Channel
+
 - To not use default AP WiFi Channel 10 to avoid conflict with other WiFi APs, call 
 ```cpp
 ESP_AT_wiFiManager.setAPChannel(newChannel);
 ```
+
+- To use random AP WiFi Channel to avoid conflict with other WiFi APs : 
+
+```cpp
+ESP_AT_WiFiManager->setAPChannel(0);
+```
+
+#### 4. To use different static AP IP from default
 
 - To use static IP (not the default dynamically allocated DHCP IP) from the network to be connected, call 
 ```cpp
@@ -367,11 +547,15 @@ ESP_AT_wiFiManager.setSTAStaticIPConfig(IPAddress(xxx,xxx,xxx,xxx));
 ESP_AT_wiFiManager.setAPStaticIPConfig(IPAddress(xxx,xxx,xxx,xxx));
 ```
 
-- To use default AP SSID `ESP_AT_XXXXXX`, later call 
+#### 5. To use default AP SSID ESP_AT_XXXXXX
+
+- To use default AP SSID `ESP_AT_XXXXXX`, call 
 
 ```cpp
 ESP_AT_wiFiManager.startConfigPortal()
 ```
+
+#### 6. To use personalized AP SSID and Password
 
 - To use personalized SSID /  Password, call
 
@@ -382,11 +566,24 @@ ESP_AT_wiFiManager.startConfigPortal((const char *) ssid.c_str(), password);
 While in AP mode, connect to it using its `SSID` (ESP_AT_XXXXXX) / `Password` ("ESP_AT_PW"), then open a browser to the Portal AP IP, default `192.168.4.1`, configure wifi then save. The Credentials / WiFi connection information will be saved in non-volatile memory. It will then autoconnect.
 
 
-OnceCredentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
+Once Credentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
 
+---
+---
+
+### Examples: 
+
+1. [ConfigOnSwitch](examples/ConfigOnSwitch)
+2. [ConfigOnStartup](examples/ConfigOnStartup) 
+3. [AutoConnect](examples/AutoConnect)
+4. [AutoConnectWithFeedback](examples/AutoConnectWithFeedback)
+ 
+ 
+---
 ---
 
 ## So, how it works?
+
 In `Configuration Portal Mode`, it starts an AP called `ESP_AT_XXXXXX`. Connect to it using the `configurable password` you can define in the code. For example, `ESP_AT_PW` (see examples):
 
 ```cpp
@@ -417,10 +614,12 @@ Enter your credentials, then click `Save`. The WiFi Credentials will be saved an
 If you're already connected to a listed WiFi AP and don't want to change anything, just select `Exit` from the `Main` page to reboot the board and connect to the previously-stored AP. The WiFi Credentials are still intact.
 
 ---
+---
 
-## Documentation
+### Documentation
 
-#### Password protect the configuration Access Point
+#### 1. Password protect the configuration Access Point
+
 You can password protect the configuration AP.  Simply add an SSID as the first parameter and the password as a second parameter to `startConfigPortal` as follows:
 
 ```cpp
@@ -432,25 +631,95 @@ Use Password having 8+ characters.
 The guidelines are that a wifi password must consist of 8 to 63 ASCII-encoded characters in the range of 32 to 126 (decimal)
 
 
-#### Configuration Portal Timeout
+#### 2. Configuration Portal Timeout
+
 You can set a timeout(in seconds) so that `ESP8266/ESP32-AT shield` doesn't hang waiting to be configured for ever. 
 
 ```cpp
 ESP_AT_WiFiManager.setConfigPortalTimeout(60);
 ```
+
 which will wait 1 minutes (60 seconds). 
 
 When the time passes, the startConfigPortal function will return and continue the sketch, unless you're accessing the Config Portal. In this case, the `startConfigPortal` function will stay until you save config data or exit the Config Portal.
 
 ---
 
-### Examples: 
+### Custom Configuration
 
- 1. [ConfigOnSwitch](examples/ConfigOnSwitch)
- 2. [ConfigOnStartup](examples/ConfigOnStartup) 
- 3. [AutoConnect](examples/AutoConnect)
- 4. [AutoConnectWithFeedback](examples/AutoConnectWithFeedback)
- 
+#### 1. Custom Parameters
+
+Many applications need configuration parameters like `MQTT host and port`, [Blynk](http://www.blynk.cc) or [emoncms](http://emoncms.org) tokens, etc. While it is possible to use `ESP_AT_WiFiManager` to collect additional parameters it is better to read these parameters from a web service once `ESP_AT_WiFiManager` has been used to connect to the internet. This makes `ESP_AT_WiFiManager` simple to code and use, parameters can be edited on a regular web server and can be changed remotely after deployment.
+
+
+#### 2. Custom IP Configuration
+
+You can set a custom IP for both AP (access point, config mode) and STA (station mode, client mode, normal project state)
+
+#### 3. Custom Access Point IP Configuration
+
+This will set your captive portal to a specific IP should you need/want such a feature. Add the following snippet before `startConfigPortal()`
+```cpp
+// Default AP IP is 192.168.4.1. Uncomment to use different AP IP
+ESP_AT_wiFiManager.setAPStaticIPConfig(IPAddress(192,168,100,1));
+```
+
+#### 4. Custom Station (client) Static IP Configuration
+
+This will use the specified IP configuration instead of using DHCP in station mode.
+```cpp
+// Set static STA IP
+ESP_AT_wiFiManager.setSTAStaticIPConfig(IPAddress(192,168,2,114));
+```
+
+#### 5. Custom HTML, CSS, Javascript
+
+There are various ways in which you can inject custom HTML, CSS or Javascript into the configuration portal.
+
+The options are:
+
+##### 5.1 Inject custom head element
+
+You can use this to any html bit to the head of the configuration portal. If you add a `<style>` element, bare in mind it overwrites the included css, not replaces.
+
+```cpp
+ESP_AT_wiFiManager.setCustomHeadElement("<style>html{filter: invert(100%); -webkit-filter: invert(100%);}</style>");
+```
+
+##### 5.2 Inject a custom bit of html in the configuration form
+
+```cpp
+ESP_AT_WMParameter custom_text("<p>This is just a text paragraph</p>");
+ESP_AT_wiFiManager.addParameter(&custom_text);
+```
+
+##### 5.3 Inject a custom bit of html in a configuration form element
+
+Just add the bit you want added as the last parameter to the custom parameter constructor.
+
+```cpp
+ESP_AT_WMParameter custom_mqtt_server("server", "mqtt server", "iot.eclipse", 40, " readonly");
+```
+
+#### 6. Filter Networks
+
+You can filter networks based on signal quality and show/hide duplicate networks.
+
+- If you would like to filter low signal quality networks you can tell WiFiManager to not show networks below an arbitrary quality %;
+
+```cpp
+ESP_AT_wiFiManager.setMinimumSignalQuality(10);
+```
+
+will not show networks under 10% signal quality. If you omit the parameter it defaults to 8%;
+
+- You can also remove or show duplicate networks (default is remove). Use this function to show (or hide) all networks.
+
+```cpp
+ESP_AT_wiFiManager.setRemoveDuplicateAPs(false);
+```
+
+---
 ---
 
 ### Example [ConfigOnSwitch](examples/ConfigOnSwitch)
@@ -495,7 +764,7 @@ const int TRIGGER_PIN2 = 23; // Change the PIN to whatever you'd like
 // Indicates whether ESP has WiFi credentials saved from previous session
 bool initialConfig = false;
 
-void heartBeatPrint(void)
+void heartBeatPrint()
 {
   static int num = 1;
 
@@ -528,7 +797,7 @@ void check_status()
   }
 }
 
-void enterConfigPortal(void)
+void enterConfigPortal()
 {
   //Local intialization. Once its business is done, there is no need to keep it around
   ESP_AT_WiFiManager ESP_AT_wiFiManager;
@@ -547,18 +816,25 @@ void enterConfigPortal(void)
 
   //Check if there is stored WiFi router/password credentials.
   //If not found, device will remain in configuration mode until switched off via webserver.
-  Serial.print("Opening Config Portal. ");
+  Serial.println("Opening Config Portal.");
 
   Router_SSID = ESP_AT_wiFiManager.WiFi_SSID();
   Router_Pass = ESP_AT_wiFiManager.WiFi_Pass();
 
-  if (Router_SSID != "")
-  {
+  if ( (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
+  {    
+    if (ESP_AT_wiFiManager.connectWifi(Router_SSID, Router_Pass) == WL_CONNECTED)
+    {
+      Serial.println(F("Got stored Credentials. Try to connect first"));
+      
+      return;
+    }
+    
     ESP_AT_wiFiManager.setConfigPortalTimeout(60); //If no access point name has been previously entered disable timeout.
-    Serial.println(F("Got stored Credentials. Timeout 60s"));
+    Serial.println(F("Got stored Credentials but can't connect. Timeout 60s"));
   }
   else
-    Serial.println(F("No stored Credentials. No timeout"));
+    Serial.println(F("No stored or not valid Credentials. No timeout"));
 
   // SSID to uppercase
   ssid.toUpperCase();
@@ -596,6 +872,8 @@ void setup()
   Serial.println("\nStart ConfigOnSwitch with ESP8266-AT WiFi module on " + String(BOARD_NAME));
 #endif
 
+  Serial.println(ESP_AT_WIFIMANAGER_VERSION);
+  
   // initialize serial for ESP module
   EspSerial.begin(115200);
 
@@ -651,7 +929,6 @@ void loop()
 
   // put your main code here, to run repeatedly
   check_status();
-
 }
 ```
 
@@ -697,9 +974,9 @@ void loop()
   #define ESP8266_AT_USE_SAM_DUE      true
 #endif
 
-#if  ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
-       defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
-       defined(STM32WB) || defined(STM32MP1) )
+#if  ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+       defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+       defined(STM32WB) || defined(STM32MP1) || defined(STM32L5))
   #if defined(ESP8266_AT_USE_STM32)
     #undef ESP8266_AT_USE_STM32
   #endif
@@ -926,6 +1203,9 @@ void loop()
   #elif defined(STM32L4)
     #warning STM32L4 board selected
     #define BOARD_TYPE  "STM32L4"
+  #elif defined(STM32L5)
+    #warning STM32L5 board selected
+    #define BOARD_TYPE  "STM32L5"  
   #elif defined(STM32H7)
     #warning STM32H7 board selected
     #define BOARD_TYPE  "STM32H7"
@@ -986,19 +1266,21 @@ const int LOCAL_PIN_LED = 13; // Pin 13, Controls the onboard LED.
 #define LED_OFF   LOW
 
 #endif    //defines_h
-
 ```
 
 ---
 
 ### Debug Terminal Output
 
-This is the terminal output when running [ConfigOnSwitch](examples/ConfigOnSwitch) example on **Adafruit Itsy-BItsy nRF52840**:
+### 1. ConfigOnSwitch on Adafruit Itsy-BItsy nRF52840 with ESP8266-AT shield
 
-#### 1. Enter Config Portal
+This is the terminal output when running [ConfigOnSwitch](examples/ConfigOnSwitch) example on **Adafruit Itsy-BItsy nRF52840 with ESP8266-AT shield**:
+
+#### 1.1 Enter Config Portal
 
 ```
 Start ConfigOnSwitch on NRF52840_ITSYBITSY
+ESP_AT_WiFiManager v1.1.0
 Opening Config Portal. *WM: LoadCfgFile 
 *WM: OK
 *WM: ======= Start Stored Config Data =======
@@ -1018,7 +1300,7 @@ Opening Config Portal. *WM: LoadCfgFile
 *WM: Host Name = blank
 *WM: CCSum=0x7f4,RCSum=0x7f4
 No stored Credentials. No timeout
-Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_: Custom AP IP: 192.168.100.1
+Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_PW: Custom AP IP: 192.168.100.1
 *WM: AP IP: 192.168.100.1
 *WM: HTTP server on channel 1
 *WM: Handle root
@@ -1057,11 +1339,11 @@ After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.
 HH
 ```
 
-#### 2. Click `Save`
+#### 1.2 Click `Save`
 
 ```
-
 Start ConfigOnSwitch on NRF52840_ITSYBITSY
+ESP_AT_WiFiManager v1.1.0
 Opening Config Portal. *WM: LoadCfgFile 
 *WM: OK
 *WM: ======= Start Stored Config Data =======
@@ -1087,10 +1369,13 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHH
 
 ---
 
+### 2. ConfigOnStartup on SAM-DUE with ESP32-AT shield
+
 This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStartup) example using **SAM-DUE with ESP32-AT shield**. The ESP32-AT firmware is AT version:2.1.0.0-dev / SDK version:v4.0.1-193-ge7ac221b4:
 
 ```
 Start ConfigOnStartup on SAM DUE
+ESP_AT_WiFiManager v1.1.0
 [ESP_AT] AT+RST
 [ESP_AT] ATE0
 [ESP_AT] Use ESP32-AT Command
@@ -1169,10 +1454,13 @@ H
 
 ---
 
+### 3. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield
+
 This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStartup) example using **STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield**.
 
 ```
 Start ConfigOnStartup on NUCLEO_F767ZI
+ESP_AT_WiFiManager v1.1.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal. *WM: EEPROMsz:1024
 *WM: CCSum=0x65a0,RCSum=0xffffffff
@@ -1226,6 +1514,8 @@ HHHHHHHHH
 ```
 ---
 
+### 4. ConfigOnStartup on Seeeduino SEEED_XIAO_M0 with ESP8266-AT shield
+
 This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStartup) example using **Seeeduino SEEED_XIAO_M0 with ESP8266-AT shield**.
 
 ```
@@ -1276,70 +1566,71 @@ HHHHHHHHH
 
 ---
 
-### Custom Configuration
+### 5. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield with invalid data
 
-#### Custom Parameters
-Many applications need configuration parameters like `MQTT host and port`, [Blynk](http://www.blynk.cc) or [emoncms](http://emoncms.org) tokens, etc. While it is possible to use `ESP_AT_WiFiManager` to collect additional parameters it is better to read these parameters from a web service once `ESP_AT_WiFiManager` has been used to connect to the internet. This makes `ESP_AT_WiFiManager` simple to code and use, parameters can be edited on a regular web server and can be changed remotely after deployment.
+This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStartup) example using **STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield**.
 
+### 5.1 Data OK => No Config Portal
 
-#### Custom IP Configuration
-You can set a custom IP for both AP (access point, config mode) and STA (station mode, client mode, normal project state)
-
-##### Custom Access Point IP Configuration
-This will set your captive portal to a specific IP should you need/want such a feature. Add the following snippet before `startConfigPortal()`
-```cpp
-// Default AP IP is 192.168.4.1. Uncomment to use different AP IP
-ESP_AT_wiFiManager.setAPStaticIPConfig(IPAddress(192,168,100,1));
+```
+Start ConfigOnStartup with ESP8266-AT WiFi module on NUCLEO_F767ZI
+ESP_AT_WiFiManager v1.1.0
+[ESP_AT] Use ES8266-AT Command
+Opening Config Portal.
+*WM: EEPROMsz:1024
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+Got stored Credentials. Try to connect first
+After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.2.114
+H
 ```
 
-##### Custom Station (client) Static IP Configuration
-This will use the specified IP configuration instead of using DHCP in station mode.
-```cpp
-// Set static STA IP
-ESP_AT_wiFiManager.setSTAStaticIPConfig(IPAddress(192,168,2,114));
+### 5.2 Valid Data but no connection => Config Portal
+
+```
+Start ConfigOnStartup with ESP8266-AT WiFi module on NUCLEO_F767ZI
+ESP_AT_WiFiManager v1.1.0
+[ESP_AT] Use ES8266-AT Command
+Opening Config Portal.
+*WM: EEPROMsz:1024
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_DISCONNECTED
+Got stored Credentials but can't connect. Timeout 60s
+Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_PW
+*WM: Configure AP: ESP_AT_ABCDEF
+*WM: AP PW: ESP_AT_PW
+*WM: Custom AP IP: 192.168.100.1
+*WM: AP IP: 192.168.100.1
+*WM: HTTP server on channel 1
+*WM: WiFi save
+*WM: SaveEEPROM,CSum=2503
+*WM: Sent wifisave page
+*WM: Connect to new AP
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+WiFi connected...yeey
+After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.2.114
+HHHHHH
 ```
 
-#### Custom HTML, CSS, Javascript
-There are various ways in which you can inject custom HTML, CSS or Javascript into the configuration portal.
-The options are:
-- inject custom head element
-You can use this to any html bit to the head of the configuration portal. If you add a `<style>` element, bare in mind it overwrites the included css, not replaces.
-
-```cpp
-ESP_AT_wiFiManager.setCustomHeadElement("<style>html{filter: invert(100%); -webkit-filter: invert(100%);}</style>");
-```
-
-- inject a custom bit of html in the configuration form
-
-```cpp
-ESP_AT_WMParameter custom_text("<p>This is just a text paragraph</p>");
-ESP_AT_wiFiManager.addParameter(&custom_text);
-```
-
-- inject a custom bit of html in a configuration form element
-Just add the bit you want added as the last parameter to the custom parameter constructor.
-
-```cpp
-ESP_AT_WMParameter custom_mqtt_server("server", "mqtt server", "iot.eclipse", 40, " readonly");
-```
-
-#### Filter Networks
-You can filter networks based on signal quality and show/hide duplicate networks.
-
-- If you would like to filter low signal quality networks you can tell WiFiManager to not show networks below an arbitrary quality %;
-
-```cpp
-ESP_AT_wiFiManager.setMinimumSignalQuality(10);
-```
-will not show networks under 10% signal quality. If you omit the parameter it defaults to 8%;
-
-- You can also remove or show duplicate networks (default is remove).
-Use this function to show (or hide) all networks.
-
-```cpp
-ESP_AT_wiFiManager.setRemoveDuplicateAPs(false);
-```
 ---
+---
+
 
 ### Debug
 
@@ -1349,11 +1640,46 @@ Debug is enabled by default on Serial. To disable, add before `startConfigPortal
 ESP_AT_wiFiManager.setDebugOutput(false);
 ```
 
+---
+
 ### Troubleshooting
+
 If you get compilation errors, more often than not, you may need to install a newer version of the board's core, `ESP8266/ESP32-AT shield` AT-command or this library version.
 
 Sometimes, the library will only work if you update the `ESP8266/ESP32-AT shield` core to the newer or older version because some function compatibility.
 
+---
+---
+
+## Releases
+
+### Major Release v1.1.0
+
+1. Use new efficient [**FlashStorage_STM32** library](https://github.com/khoih-prog/FlashStorage_STM32). 
+2. Add support to new **STM32 core v2.0.0** and STM32L5
+3. Permit auto-connect without waiting for Config Portal if stored data is valid and WiFi test connection is OK.
+4. Update examples with new features
+
+### Release v1.0.3
+
+1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
+2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
+3. Add sample Packages_Patches for **STM32F/L/H/G/WB/MP1** (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
+4. Add Packages_Patches for other boards.
+5. Add instructions to use EspSerial/Serial1 on some **STM32F/L/H/G/WB/MP1** boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
+6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for **Nano-33-IoT, ZERO, MKR, etc.**
+
+### Release v1.0.2
+
+1. Add support to **ESP32-AT-command shield**.
+
+### Release v1.0.1
+
+1. Add support to **nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved **automatically in LittleFS**.
+2. Improve support to **STM32F/L/H/G/WB/MP1**. Credentials to be saved **automatically in EEPROM**.
+3. Drop support to **Teensy** boards.
+
+---
 ---
 
 ### Issues ###
@@ -1378,28 +1704,13 @@ Submit issues to: [ESP_AT_WiFiManager issues](https://github.com/khoih-prog/ESP_
  7. Add support to W600 and WIS600-01S
  8. Add support to all **STM32F/L/H/G/WB/MP1**
  9. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
- 
+10. Use more efficient [FlashStorage_SAMD](https://github.com/khoih-prog/FlashStorage_SAMD) and [FlashStorage_STM32](https://github.com/khoih-prog/FlashStorage_STM32)
+11. Add Table-of-Contents and Version String
+12. Enforce WiFi PWD minimum length of 8 chars
+13. Permit auto-connect without waiting for Config Portal if stored data is valid and WiFi test connection is OK.
+14. Add support to new STM32 core v2.0.0 and new STM32L5 boards.
+
 ---
-
-### New Version v1.0.3
-
-1. Add support to all **STM32F/L/H/G/WB/MP1 (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)**
-2. Add support to **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
-3. Add sample Packages_Patches for **STM32F/L/H/G/WB/MP1** (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8)
-4. Add Packages_Patches for other boards.
-5. Add instructions to use EspSerial/Serial1 on some **STM32F/L/H/G/WB/MP1** boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.)
-6. Add Packages' Patches for Arduino SAMD21 to fix compiler error issue for **Nano-33-IoT, ZERO, MKR, etc.**
-
-### New Version v1.0.2
-
-1. Add support to **ESP32-AT-command shield**.
-
-### New Version v1.0.1
-
-1. Add support to **nRF52 (AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.)**. Credentials to be saved **automatically in LittleFS**.
-2. Improve support to **STM32F/L/H/G/WB/MP1**. Credentials to be saved **automatically in EEPROM**.
-3. Drop support to **Teensy** boards.
-
 ---
 
 ### Contributions and Thanks
