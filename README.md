@@ -59,7 +59,7 @@
 * [Custom Configuration](#custom-configuration)
   * [1. Custom Parameters](#1-custom-parameters)
   * [2. Custom IP Configuration](#2-custom-ip-configuration)
-  * [3. Custom Parameters](#3-custom-access-point-ip-configuration)
+  * [3. Custom Access Point IP Configuration](#3-custom-access-point-ip-configuration)
   * [4. Custom Station (client) Static IP Configuration](#4-custom-station-client-static-ip-configuration)
   * [5. Custom HTML, CSS, Javascript](#5-custom-html-css-javascript)
     * [5.1 Inject custom head element](#51-inject-custom-head-element)
@@ -75,7 +75,7 @@
     * [1.2 Click `Save`](#12-click-save)
   * [2. ConfigOnStartup on SAM-DUE with ESP32-AT shield](#2-configonstartup-on-sam-due-with-esp32-at-shield)
   * [3. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield](#3-configonstartup-on-stm32-nucleo-144-nucleo_f767zi-with-esp8266-at-shield)
-  * [4. ConfigOnStartup on Seeeduino SEEED_XIAO_M0 with ESP8266-AT shield](#1-configonstartup-on-seeeduino-seeed_xiao_m0-with-esp8266-at-shield)
+  * [4. ConfigOnStartup on Seeeduino SEEED_XIAO_M0 with ESP8266-AT shield](#4-configonstartup-on-seeeduino-seeed_xiao_m0-with-esp8266-at-shield)
   * [5. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield  with invalid data](#5-configonstartup-on-stm32-nucleo-144-nucleo_f767zi-with-esp8266-at-shield-with-invalid-data)
     * [5.1 Data OK => No Config Portal](#51-data-ok--no-config-portal)
     * [5.2 Valid Data but no connection => Config Portal](#52-valid-data-but-no-connection--config-Portal)
@@ -724,7 +724,7 @@ ESP_AT_wiFiManager.setRemoveDuplicateAPs(false);
 
 ### Example [ConfigOnSwitch](examples/ConfigOnSwitch)
 
-#### 1. File [ConfigOnSwitch](examples/ConfigOnSwitch/ConfigOnSwitch.ino)
+#### 1. File [ConfigOnSwitch.ino](examples/ConfigOnSwitch/ConfigOnSwitch.ino)
 
 ```cpp
 // Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
@@ -1270,7 +1270,7 @@ const int LOCAL_PIN_LED = 13; // Pin 13, Controls the onboard LED.
 
 ---
 
-### Debug Terminal Output
+### Debug Terminal Output Samples
 
 ### 1. ConfigOnSwitch on Adafruit Itsy-BItsy nRF52840 with ESP8266-AT shield
 
