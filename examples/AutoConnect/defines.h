@@ -303,7 +303,15 @@
     #define BOARD_TYPE  "STM32 Unknown"
   #endif
 
+#elif ( ARDUINO_ARCH_RP2040 || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+    
+  #warning RASPBERRY_PI_PICO board selected
+  #define BOARD_TYPE  "RASPBERRY_PI_PICO"
+  
+  #define EspSerial       Serial1  
+  
 #else
+
   // For Mega
   #define EspSerial Serial3
   #define BOARD_TYPE      "AVR Mega"

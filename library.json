@@ -1,8 +1,8 @@
 {
   "name": "ESP_AT_WiFiManager",
-  "version": "1.1.0",
-  "keywords": "wifi, ESP8266, ESP32, AT, shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32, Credentials, Manager, EEPROM, FlashStorage, FlashStorage-SAMD, FlashStorage-STM32, DueFlashStorage, LittleFS",
-  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, etc. boards running ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, FlashStorage_SAMD, FlashStorage_STM32, DueFlashStorage of nRF52 LittleFS.",
+  "version": "1.2.0",
+  "keywords": "wifi, ESP8266, ESP32, AT-command, wifi-shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32, rpi-pico, rp2040, Credentials, Manager, EEPROM, FlashStorage, FlashStorage-SAMD, FlashStorage-STM32, DueFlashStorage, LittleFS",
+  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, RP2040-based RASPBERRY_PI_PICO, etc. boards using ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, FlashStorage_SAMD, FlashStorage_STM32, DueFlashStorage or nRF52/RP2040 LittleFS.",
   "authors":
   {
     "name":  "Khoi Hoang",
@@ -45,7 +45,7 @@
     {
       "owner": "khoih.prog",
       "name": "ESP8266_AT_WebServer",
-      "version": "^1.1.2",
+      "version": "^1.2.0",
       "platforms": ["*"]
     }
   ],

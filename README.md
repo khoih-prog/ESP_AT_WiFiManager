@@ -15,6 +15,7 @@
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
 * [Changelog](#changelog)
+  * [Major Release v1.2.0](#major-release-v120)
   * [Major Release v1.1.0](#major-release-v110)
   * [Release v1.0.3](#release-v103)
   * [Release v1.0.2](#release-v102)
@@ -39,6 +40,7 @@
   * [7. For STM32 boards](#7-for-stm32-boards) 
     * [7.1 For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
     * [7.2 For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
+  * [8. For RP2040-based boards](#8-for-rp2040-based-boards) 
 * [How It Works](#how-it-works)
 * [How to use](#how-to-use)
   * [1. Basic usage](#1-basic-usage)
@@ -79,6 +81,10 @@
   * [5. ConfigOnStartup on STM32 Nucleo-144 NUCLEO_F767ZI with ESP8266-AT shield  with invalid data](#5-configonstartup-on-stm32-nucleo-144-nucleo_f767zi-with-esp8266-at-shield-with-invalid-data)
     * [5.1 Data OK => No Config Portal](#51-data-ok--no-config-portal)
     * [5.2 Valid Data but no connection => Config Portal](#52-valid-data-but-no-connection--config-Portal)
+  * [6. ConfigOnSwitch on RASPBERRY_PI_PICO with ESP8266-AT shield](#6-configonswitch-on-raspberry_pi_pico-with-esp8266-at-shield)
+    * [6.1 No Config Data => Config Portal](#61-no-config-data--config-portal)
+    * [6.2 Forced Config => Config Portal](#62-forced-config--config-portal)
+    * [6.3 Data Saved => Connect WiFi](#63-data-saved--connect-wifi)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Releases](#releases)
@@ -103,7 +109,9 @@ This [**ESP_AT_WiFiManager library**](https://github.com/khoih-prog/ESP_AT_WiFiM
 2. [`Ken Taylor WiFiManager`](https://github.com/kentaylor/WiFiManager)
 3. [`Khoi Hoang's ESP_WiFiManager`](https://github.com/khoih-prog/ESP_WiFiManager)
 
-to support **nRF52, SAM DUE, SAMD, STM32F/L/H/G/WB/MP1, etc. boards using ESP8266/ESP32-AT-command shields.**
+to support **nRF52, SAM DUE, SAMD, STM32F/L/H/G/WB/MP1, RASPBERRY_PI_PICO, etc. boards using ESP8266/ESP32-AT-command shields.**
+
+The **RP2040-based boards, such as RASPBERRY_PI_PICO**, are currently supported using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico). The support to [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) will be added in the future.
 
 The AVR-family boards (Mega, UNO, Nano, etc.) are **not supported** as they don't have enough memory to run Config Portal WebServer.
 
@@ -111,7 +119,7 @@ This is a Credentials / WiFi Connection Manager with fallback web configuration 
 
 The web configuration portal, served from the `ESP8266/ESP32-AT-command shields` is operating as an access point (AP) with configurable static IP address or use default IP Address of 192.168.4.1
 
-You can also specify static AP and STA IP. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Credentials are saved in EEPROM, [`FlashStorage_SAMD`](https://github.com/khoih-prog/FlashStorage_SAMD), [`FlashStorage_STM32`](https://github.com/khoih-prog/FlashStorage_STM32), [`DueFlashStorage`](https://github.com/sebnil/DueFlashStorage) or nRF52 LittleFS.
+You can also specify static AP and STA IP. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Credentials are saved in EEPROM, [`FlashStorage_SAMD`](https://github.com/khoih-prog/FlashStorage_SAMD), [`FlashStorage_STM32`](https://github.com/khoih-prog/FlashStorage_STM32), [`DueFlashStorage`](https://github.com/sebnil/DueFlashStorage) or nRF52/RP2040 LittleFS.
 
 ---
 
@@ -150,10 +158,17 @@ This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiM
 - Generic Flight Controllers
 - Midatronics boards
  
+ 7. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico). 
+ 
 ---
 ---
 
 ## Changelog
+
+### Major Release v1.2.0
+
+1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico)
+2. Update examples with new features
 
 ### Major Release v1.1.0
 
@@ -193,17 +208,18 @@ This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiM
  4. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  5. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  6. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 7. [`Adafruit SAMD core 1.6.7+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 7. [`Adafruit SAMD core 1.6.8+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  8. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  9. [`Adafruit nRF52 v0.21.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
-10. [`ESP8266_AT_WebServer library v1.1.2+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
-11. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest). Or [`Platform.io FlashStorage_SAMD library v1.0.0+`](https://platformio.org/lib/show/11242/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
-12. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
-13. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
-14. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52 boards.
-15. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
-16. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
-17. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
+10. [`Earle Philhower's arduino-pico core v1.2.1+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)  
+11. [`ESP8266_AT_WebServer library v1.2.0+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
+12. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest). Or [`Platform.io FlashStorage_SAMD library v1.0.0+`](https://platformio.org/lib/show/11242/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
+13. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
+14. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
+15. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52 boards.
+16. [`Ai-Thinker AT Firmware v1.5.4`](AT_Firmwares/At_firmware_bin1.54.zip) or [`AT Firmware v1.7.4.0`](AT_Firmwares/AT_Firmware_bin_1.7.4.0.zip) for ESP8266-AT shields.
+17. [`AT version_2.1.0.0_dev`](AT_Firmwares/AT_version_2.1.0.0_dev.zip) for ESP32-AT shields.
+18. `AT version_1.1.4` for WIS600-01S and W600-AT WiFi shields.
 
 ---
 
@@ -399,11 +415,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.7) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.7). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.8) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.8). 
 
-Supposing the Adafruit SAMD core version is 1.6.7. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.6.8. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.7/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.8/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -462,6 +478,19 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
+
+#### 8. For RP2040-based boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards***, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.2.1) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.2.1). 
+
+Supposing the rp2040 core version is 1.2.1. This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.2.1/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/platform.txt`
 
 ---
 ---
@@ -1629,6 +1658,180 @@ HHHHHH
 ```
 
 ---
+
+### 6. ConfigOnSwitch on RASPBERRY_PI_PICO with ESP8266-AT shield
+
+This is the terminal output when running [ConfigOnSwitch](examples/ConfigOnSwitch) example using **RASPBERRY_PI_PICO with ESP8266-AT shield**.
+
+### 6.1 No Config Data => Config Portal
+
+```
+Start ConfigOnSwitch with ESP8266-AT WiFi module on RASPBERRY_PI_PICO
+ESP_AT_WiFiManager v1.2.0
+[ESP_AT] Use ES8266-AT Command
+Opening Config Portal.
+*WM: LoadCfgFile 
+*WM: failed
+*WM: LoadBkUpCfgFile 
+*WM: failed
+*WM: ======= Start Stored Config Data =======
+*WM: Header = , SSID = , PW = 
+*WM: Host Name = 
+*WM: CCSum=0x1df0,RCSum=0xffffffff
+*WM: InitCfgFile,sz=140
+*WM: SaveCfgFile 
+*WM: WCSum=0x7f4
+*WM: OK
+*WM: SaveBkUpCfgFile 
+*WM: OK
+*WM: LoadCfgFile 
+*WM: OK
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = blank, PW = blank
+*WM: Host Name = blank
+*WM: CCSum=0x7f4,RCSum=0x7f4
+No stored or not valid Credentials. No timeout
+Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_PW
+*WM: Configure AP: ESP_AT_ABCDEF
+*WM: AP PW: ESP_AT_PW
+*WM: Custom AP IP: 192.168.100.1
+*WM: AP IP: 192.168.100.1
+*WM: HTTP server on channel 1
+*WM: Handle root
+*WM: LoadCfgFile 
+*WM: OK
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = blank, PW = blank
+*WM: Host Name = blank
+*WM: CCSum=0x7f4,RCSum=0x7f4
+*WM: Handle WiFi
+*WM: Scan Network
+*WM: DUP AP: 
+*WM: HueNet1 / -32
+*WM: HueNetTek / -37
+*WM: dlink-4F96 / -79
+*WM: Sent config page
+*WM: WiFi save
+*WM: SaveCfgFile 
+*WM: WCSum=0x9c7
+*WM: OK
+*WM: SaveBkUpCfgFile 
+*WM: OK
+*WM: Sent wifisave page
+*WM: Connect to new AP
+*WM: LoadCfgFile 
+*WM: OK
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+WiFi connected...yeey
+After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.2.114
+HHH
+```
+
+### 6.2 Forced Config => Config Portal
+
+```
+Start ConfigOnSwitch with ESP8266-AT WiFi module on RASPBERRY_PI_PICO
+ESP_AT_WiFiManager v1.2.0
+[ESP_AT] Use ES8266-AT Command
+Opening Config Portal.
+*WM: LoadCfgFile 
+*WM: OK
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+Got stored Credentials. Try to connect first
+After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.2.114
+H
+Config Portal requested.
+Opening Config Portal.
+*WM: LoadCfgFile 
+*WM: OK
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+Forced CP, No stored or not valid Credentials. No timeout
+Start Config Portal, SSID = ESP_AT_ABCDEF, Pass = ESP_AT_PW
+*WM: Configure AP: ESP_AT_ABCDEF
+*WM: AP PW: ESP_AT_PW
+*WM: Custom AP IP: 192.168.100.1
+*WM: AP IP: 192.168.100.1
+*WM: HTTP server on channel 1
+*WM: Handle root
+*WM: Info
+*WM: Sent info page
+*WM: Handle root
+*WM: Handle WiFi
+*WM: Scan Network
+*WM: DUP AP: Waterhome
+*WM: HueNet1 / -30
+*WM: HueNetTek / -34
+*WM: HueNet2 / -55
+*WM: Sent config page
+*WM: WiFi save
+*WM: SaveCfgFile 
+*WM: WCSum=0x9c7
+*WM: OK
+*WM: SaveBkUpCfgFile 
+*WM: OK
+*WM: Sent wifisave page
+*WM: Connect to new AP
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+WiFi connected...yeey
+H
+```
+
+### 6.3 Data Saved => Connect WiFi
+
+```
+Start ConfigOnSwitch with ESP8266-AT WiFi module on RASPBERRY_PI_PICO
+ESP_AT_WiFiManager v1.2.0
+[ESP_AT] Use ES8266-AT Command
+Opening Config Portal.
+*WM: LoadCfgFile 
+*WM: OK
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: CCSum=0x9c7,RCSum=0x9c7
+*WM: Header = ESP_AT, SSID = HueNet1, PW = password
+*WM: Host Name = blank
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Use ES8266-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+Got stored Credentials. Try to connect first
+After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.2.114
+H
+```
+
+
+---
 ---
 
 
@@ -1652,6 +1855,11 @@ Sometimes, the library will only work if you update the `ESP8266/ESP32-AT shield
 ---
 
 ## Releases
+
+### Major Release v1.2.0
+
+1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico)
+2. Update examples with new features
 
 ### Major Release v1.1.0
 
@@ -1691,7 +1899,8 @@ Submit issues to: [ESP_AT_WiFiManager issues](https://github.com/khoih-prog/ESP_
 ### TO DO
 
 1. Add support to more boards
-2. Add more examples 
+2. Add more examples
+3. Add support to RP2040-based boards such as RASPBERRY_PI_PICO, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
 
 ### DONE
 
@@ -1709,6 +1918,7 @@ Submit issues to: [ESP_AT_WiFiManager issues](https://github.com/khoih-prog/ESP_
 12. Enforce WiFi PWD minimum length of 8 chars
 13. Permit auto-connect without waiting for Config Portal if stored data is valid and WiFi test connection is OK.
 14. Add support to new STM32 core v2.0.0 and new STM32L5 boards.
+15. Add support to RP2040-based boards such as RASPBERRY_PI_PICO, using [Earle Philhower's arduino-pico core](https://github.com/earlephilhower/arduino-pico) 
 
 ---
 ---

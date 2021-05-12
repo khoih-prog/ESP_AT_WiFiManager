@@ -15,7 +15,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,12 +24,13 @@
   1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
   1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
+  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
  *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_h
 #define ESP_AT_WiFiManager_h
 
-#define ESP_AT_WIFIMANAGER_VERSION     "ESP_AT_WiFiManager v1.1.0"
+#define ESP_AT_WIFIMANAGER_VERSION     "ESP_AT_WiFiManager v1.2.0"
 
 #if !defined(DEBUG_WIFIMGR)
   #define DEBUG_WIFIMGR      false
@@ -83,6 +84,14 @@
   #warning Use SAMD architecture from ESP8266_AT_WiFiManager
 #endif
 
+#if ( defined(ARDUINO_ARCH_RP2040) )
+  #if defined(ESP8266_AT_USE_RPI_PICO)
+    #undef ESP8266_AT_USE_RPI_PICO
+  #endif
+  #define ESP8266_AT_USE_RPI_PICO      true
+  #warning Use RPI_PICO architecture from ESP8266_AT_WiFiManager
+#endif
+
 #if ( defined(ARDUINO_AVR_NANO) || defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_DUEMILANOVE) || defined(ARDUINO_AVR_YUN) || \
       defined(ARDUINO_AVR_MINI) || defined(ARDUINO_AVR_ETHERNET) || defined(ARDUINO_AVR_FIO) || defined(ARDUINO_AVR_BT) || \
       defined(ARDUINO_AVR_PRO) || defined(ARDUINO_AVR_NG) || defined(ARDUINO_AVR_GEMMA) || defined(ARDUINO_AVR_MEGA) || \
@@ -95,7 +104,7 @@
 
 #include <avr/pgmspace.h>
 
-#define swap(a, b) { int16_t t = a; a = b; b = t; }
+#define local_swap(a, b) { int16_t t = a; a = b; b = t; }
 
 #include <IPAddress.h>
 #include <ESP8266_AT_WebServer.h>
@@ -465,6 +474,8 @@ class ESP_AT_WiFiManager
   #include "ESP_AT_WiFiManager-impl_SAMD.h"
 #elif (ESP8266_AT_USE_STM32)
   #include "ESP_AT_WiFiManager-impl_STM32.h"
+#elif (ESP8266_AT_USE_RPI_PICO)
+  #include "ESP_AT_WiFiManager-impl_RPi_Pico.h"
 #else
   #error Not supported Boards. Please check your Tools->Board setting.
 #endif

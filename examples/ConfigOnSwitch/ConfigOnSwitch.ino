@@ -10,7 +10,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -19,6 +19,7 @@
   1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
   1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
+  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when no WiFi configuration has been previously entered or when a button is pushed.
@@ -65,8 +66,8 @@ const int TRIGGER_PIN = 22;   // Change the PIN to whatever you'd like
 */
 const int TRIGGER_PIN2 = 23; // Change the PIN to whatever you'd like
 
-// Indicates whether ESP has WiFi credentials saved from previous session
-bool initialConfig = false;
+// Indicates whether CP is forced
+bool forcedConfig = false;
 
 void heartBeatPrint()
 {
@@ -125,12 +126,12 @@ void enterConfigPortal()
   Router_SSID = ESP_AT_wiFiManager.WiFi_SSID();
   Router_Pass = ESP_AT_wiFiManager.WiFi_Pass();
 
-  if ( (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
+  if ( !forcedConfig && (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
   {    
     if (ESP_AT_wiFiManager.connectWifi(Router_SSID, Router_Pass) == WL_CONNECTED)
     {
       Serial.println(F("Got stored Credentials. Try to connect first"));
-      
+            
       return;
     }
     
@@ -138,8 +139,10 @@ void enterConfigPortal()
     Serial.println(F("Got stored Credentials but can't connect. Timeout 60s"));
   }
   else
-    Serial.println(F("No stored or not valid Credentials. No timeout"));
+    Serial.println(F("Forced CP, No stored or not valid Credentials. No timeout"));
 
+  forcedConfig = false;
+  
   // SSID to uppercase
   ssid.toUpperCase();
 
@@ -154,6 +157,8 @@ void enterConfigPortal()
     Serial.println(F("WiFi connected...yeey"));
 
   digitalWrite(LOCAL_PIN_LED, LED_OFF); // Turn led off as we exit Config Portal
+
+  //ESP_AT_wiFiManager.resetBoard();
 }
 
 void setup()
@@ -228,6 +233,8 @@ void loop()
   if ((digitalRead(TRIGGER_PIN) == LOW) || (digitalRead(TRIGGER_PIN2) == LOW))
   {
     Serial.println("\nConfig Portal requested.");
+    forcedConfig = true;
+    
     enterConfigPortal();
   }
 
