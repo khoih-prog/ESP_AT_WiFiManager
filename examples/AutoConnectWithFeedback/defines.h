@@ -303,10 +303,41 @@
     #define BOARD_TYPE  "STM32 Unknown"
   #endif
 
-#elif ( ARDUINO_ARCH_RP2040 || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+#elif ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+      defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
     
   #warning RASPBERRY_PI_PICO board selected
-  #define BOARD_TYPE  "RASPBERRY_PI_PICO"
+
+  #if defined(ARDUINO_ARCH_MBED)
+
+    #warning Using ARDUINO_ARCH_MBED
+    #define ESP8266_AT_USE_MBED_RP2040      true
+
+    // Use true only for testing. Will erase stored config data
+    #define FORCE_REFORMAT                  false
+    
+    #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+          defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+      // Only undef known BOARD_NAME to use better one
+      #undef BOARD_NAME
+    #endif
+    
+    #if defined(ARDUINO_RASPBERRY_PI_PICO)
+      #define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
+    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+      #define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
+    #elif defined(ARDUINO_GENERIC_RP2040)
+      #define BOARD_NAME      "MBED GENERIC_RP2040"
+    #elif defined(ARDUINO_NANO_RP2040_CONNECT) 
+      #define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+    #else
+      // Use default BOARD_NAME if exists
+      #if !defined(BOARD_NAME)
+        #define BOARD_NAME      "MBED Unknown RP2040"
+      #endif
+    #endif
+  
+  #endif
   
   #define EspSerial       Serial1  
   

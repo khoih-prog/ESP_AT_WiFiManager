@@ -15,7 +15,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,13 +24,14 @@
   1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
   1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
-  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
+  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
+  1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
  *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_h
 #define ESP_AT_WiFiManager_h
 
-#define ESP_AT_WIFIMANAGER_VERSION     "ESP_AT_WiFiManager v1.2.0"
+#define ESP_AT_WIFIMANAGER_VERSION     "ESP_AT_WiFiManager v1.3.0"
 
 #if !defined(DEBUG_WIFIMGR)
   #define DEBUG_WIFIMGR      false
@@ -50,9 +51,8 @@
   #endif
   #define ESP8266_AT_USE_NRF528XX      true
   #warning Use nFR52 architecture from ESP8266_AT_WiFiManager
-#endif
 
-#if  ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+#elif  ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
        defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
        defined(STM32WB) || defined(STM32MP1) || defined(STM32L5) )
   #if defined(STM32F0)
@@ -62,17 +62,15 @@
     #undef ESP8266_AT_USE_STM32
   #endif
   #define ESP8266_AT_USE_STM32      true
-#endif
 
-#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
+#elif ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
   #if defined(ESP8266_AT_USE_SAM_DUE)
     #undef ESP8266_AT_USE_SAM_DUE
   #endif
   #define ESP8266_AT_USE_SAM_DUE      true
   #warning Use SAM_DUE architecture from ESP8266_AT_WiFiManager
-#endif
 
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+#elif    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
@@ -82,17 +80,22 @@
   #endif
   #define ESP8266_AT_USE_SAMD      true
   #warning Use SAMD architecture from ESP8266_AT_WiFiManager
-#endif
 
-#if ( defined(ARDUINO_ARCH_RP2040) )
+#elif ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) )
   #if defined(ESP8266_AT_USE_RPI_PICO)
     #undef ESP8266_AT_USE_RPI_PICO
   #endif
   #define ESP8266_AT_USE_RPI_PICO      true
   #warning Use RPI_PICO architecture from ESP8266_AT_WiFiManager
-#endif
 
-#if ( defined(ARDUINO_AVR_NANO) || defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_DUEMILANOVE) || defined(ARDUINO_AVR_YUN) || \
+#elif ( defined(ARDUINO_ARCH_RP2040) && defined(ARDUINO_ARCH_MBED) )
+  #if defined(ESP8266_AT_USE_MBED_RP2040)
+    #undef ESP8266_AT_USE_MBED_RP2040
+  #endif
+  #define ESP8266_AT_USE_MBED_RP2040      true
+  #warning Use MBED_RP2040 architecture from ESP8266_AT_WiFiManager
+
+#elif ( defined(ARDUINO_AVR_NANO) || defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_DUEMILANOVE) || defined(ARDUINO_AVR_YUN) || \
       defined(ARDUINO_AVR_MINI) || defined(ARDUINO_AVR_ETHERNET) || defined(ARDUINO_AVR_FIO) || defined(ARDUINO_AVR_BT) || \
       defined(ARDUINO_AVR_PRO) || defined(ARDUINO_AVR_NG) || defined(ARDUINO_AVR_GEMMA) || defined(ARDUINO_AVR_MEGA) || \
       defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_ADK) || defined(ARDUINO_AVR_LEONARDO) || defined(ARDUINO_AVR_MICRO) || \
@@ -100,6 +103,11 @@
       defined(ARDUINO_AVR_UNO_WIFI_REV2) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega1280__) || \
       defined(__AVR_ATmega1284__) || defined(__AVR_ATmega2560__) )
   #error This code is not intended to run on the AVR platform! Please check your Tools->Board setting.
+  
+#else
+
+  #error Not supported board or platform! Please check your Tools->Board setting.
+    
 #endif
 
 #include <avr/pgmspace.h>
@@ -476,6 +484,8 @@ class ESP_AT_WiFiManager
   #include "ESP_AT_WiFiManager-impl_STM32.h"
 #elif (ESP8266_AT_USE_RPI_PICO)
   #include "ESP_AT_WiFiManager-impl_RPi_Pico.h"
+#elif (ESP8266_AT_USE_MBED_RP2040)
+  #include "ESP_AT_WiFiManager-impl_Mbed_RPi_Pico.h"
 #else
   #error Not supported Boards. Please check your Tools->Board setting.
 #endif

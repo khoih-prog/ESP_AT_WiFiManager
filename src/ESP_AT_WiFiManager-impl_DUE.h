@@ -15,7 +15,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -24,11 +24,14 @@
   1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
   1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
-  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
+  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
+  1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
  *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_impl_DUE_h
 #define ESP_AT_WiFiManager_impl_DUE_h
+
+#define DEFAULT_HOST_NAME     "SAM-DUE"
 
 //Use DueFlashStorage to simulate EEPROM
 //https://github.com/sebnil/DueFlashStorage
@@ -67,7 +70,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     strcpy(ESP_AT_WM_Config.header,           ESP_AT_BOARD_TYPE);
     strcpy(ESP_AT_WM_Config.wifi_ssid,        ESP_AT_NO_CONFIG);
     strcpy(ESP_AT_WM_Config.wifi_pw,          ESP_AT_NO_CONFIG);
-    strcpy(ESP_AT_WM_Config.host_name,        ESP_AT_NO_CONFIG);
+    strcpy(ESP_AT_WM_Config.host_name,        DEFAULT_HOST_NAME);
     // Don't need
     ESP_AT_WM_Config.checkSum = 0;
    
@@ -83,6 +86,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
   else
   {
+    DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
   

@@ -1,5 +1,5 @@
 /********************************************************************************************************************************
-  ESP_AT_WiFiManager-impl_RPi_Pico.h
+  ESP_AT_WiFiManager-impl_Mbed_RPi_Pico.h
   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
 
   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
@@ -28,23 +28,54 @@
   1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
  *********************************************************************************************************************************/
 
-#ifndef ESP_AT_WiFiManager_impl_RPi_Pico_h
-#define ESP_AT_WiFiManager_impl_RPi_Pico_h
+#ifndef ESP_AT_WiFiManager_impl_Mbed_RPi_Pico_h
+#define ESP_AT_WiFiManager_impl_Mbed_RPi_Pico_h
 
-#define DEFAULT_HOST_NAME     "RP2040"
+#define DEFAULT_HOST_NAME     "MBED-RP2040"
 
-//Use LittleFS for RPI Pico
-#include <FS.h>
-#include <LittleFS.h>
+  //Use LittleFS for MBED RPI Pico
+  #include "FlashIAPBlockDevice.h"
+  #include "LittleFileSystem.h"
+  #include "mbed.h"
 
-FS* filesystem =      &LittleFS;
-#define FileFS        LittleFS
-#warning Using LittleFS in ESP_AT_WiFiManager-impl_RPi_Pico.h
+  #include <stdio.h>
+  #include <errno.h>
+  #include <functional>
+
+  #include "BlockDevice.h"
+
+  #if !defined(RP2040_FLASH_SIZE)
+    #define RP2040_FLASH_SIZE         (2 * 1024 * 1024)
+  #endif
+
+  #if !defined(RP2040_FS_LOCATION_END)
+  #define RP2040_FS_LOCATION_END    RP2040_FLASH_SIZE
+  #endif
+
+  #if !defined(RP2040_FS_SIZE_KB)
+    // Using default 16KB for LittleFS
+    #define RP2040_FS_SIZE_KB       (64)
+  #endif
+
+  #if !defined(RP2040_FS_START)
+    #define RP2040_FS_START           (RP2040_FLASH_SIZE - (RP2040_FS_SIZE_KB * 1024))
+  #endif
+
+  #if !defined(FORCE_REFORMAT)
+    #define FORCE_REFORMAT            false
+  #endif
+
+  FlashIAPBlockDevice bd(XIP_BASE + RP2040_FS_START, (RP2040_FS_SIZE_KB * 1024));
+
+  mbed::LittleFileSystem fs("fs");
+  
+#warning Using LittleFS in ESP_AT_WiFiManager-impl_Mbed_RPi_Pico.h
 
 // Use LittleFS/InternalFS for nRF52
-#define  CONFIG_FILENAME              ("/wm_config.dat")
-#define  CONFIG_FILENAME_BACKUP       ("/wm_config.bak")
+#define  CONFIG_FILENAME              ("/fs/wm_config.dat")
+#define  CONFIG_FILENAME_BACKUP       ("/fs/wm_config.bak")
 
+#if 0
 typedef struct
 {
   uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
@@ -81,6 +112,7 @@ void NVIC_SystemReset()
 
   while(true);
 }
+#endif
 
 void ESP_AT_WiFiManager::resetBoard()
 {
@@ -102,14 +134,14 @@ void ESP_AT_WiFiManager::loadConfigData()
   DEBUG_WM1(F("LoadCfgFile "));
   
   // file existed
-  File file = FileFS.open(CONFIG_FILENAME, "r");    
+  FILE *file = fopen(CONFIG_FILENAME, "r"); 
     
   if (!file)
   {
     DEBUG_WM1(F("failed"));
 
     // Trying open redundant config file
-    file = FileFS.open(CONFIG_FILENAME_BACKUP, "r");
+    file = fopen(CONFIG_FILENAME_BACKUP, "r");
     DEBUG_WM1(F("LoadBkUpCfgFile "));
 
     if (!file)
@@ -118,25 +150,46 @@ void ESP_AT_WiFiManager::loadConfigData()
       return;
     }
   }
- 
-  file.seek(0);
-  //file.read((char *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-  file.read((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
+  
+  fseek(file, 0, SEEK_SET);
+  fread((uint8_t *) &ESP_AT_WM_Config, 1, sizeof(ESP_AT_WM_Config), file);
+  fclose(file);
 
   DEBUG_WM1(F("OK"));
-  file.close();
+}
+
+bool initLittleFS()
+{
+  DEBUG_WM2("LittleFS size (KB) = ", RP2040_FS_SIZE_KB);
+
+  int err = fs.mount(&bd);
+
+  DEBUG_WM1(err ? "LittleFS Mount Fail" : "LittleFS Mount OK");
+
+  if (err || FORCE_REFORMAT)
+  { 
+    // Reformat if we can't mount the filesystem
+    DEBUG_WM1("Formatting... ");
+
+    err = fs.reformat(&bd);
+  }
+
+  bool beginOK = (err == 0);
+   
+  if (!beginOK)
+  {
+    DEBUG_WM1("\nLittleFS error");
+  }
+
+  return beginOK;
 }
     
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
   
-  // Initialize Internal File System
-  if (!FileFS.begin())
-  {
-    DEBUG_WM1(F("LittleFS failed"));
+  if (!initLittleFS())
     return false;
-  }
   
   // if config file exists, load
   loadConfigData();
@@ -198,14 +251,14 @@ void ESP_AT_WiFiManager::saveConfigData()
   
   DEBUG_WM2(F("WCSum=0x"), String(calChecksum, HEX));
 
-  File file = FileFS.open(CONFIG_FILENAME, "w");
+  FILE *file = fopen(CONFIG_FILENAME, "w");
 
   if (file)
   {
-    file.seek(0);
-    file.write((uint8_t*) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
+    fseek(file, 0, SEEK_SET);
+    fwrite((uint8_t *) &ESP_AT_WM_Config, 1, sizeof(ESP_AT_WM_Config), file);
+    fclose(file);
     
-    file.close();
     DEBUG_WM1(F("OK"));
   }
   else
@@ -216,14 +269,13 @@ void ESP_AT_WiFiManager::saveConfigData()
   DEBUG_WM1(F("SaveBkUpCfgFile "));
 
   // Trying open redundant Auth file
-  file = FileFS.open(CONFIG_FILENAME_BACKUP, "w");
+  file = fopen(CONFIG_FILENAME_BACKUP, "w");
 
   if (file)
   {
-    file.seek(0);
-    file.write((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-    
-    file.close();
+    fseek(file, 0, SEEK_SET);
+    fwrite((uint8_t *) &ESP_AT_WM_Config, 1, sizeof(ESP_AT_WM_Config), file);
+    fclose(file);
     DEBUG_WM1(F("OK"));
   }
   else
@@ -232,4 +284,4 @@ void ESP_AT_WiFiManager::saveConfigData()
   } 
 }
     
-#endif      //ESP_AT_WiFiManager_impl_RPi_Pico_h
+#endif      //ESP_AT_WiFiManager_impl_Mbed_RPi_Pico_h

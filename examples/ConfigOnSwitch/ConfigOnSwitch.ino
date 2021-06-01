@@ -10,7 +10,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -19,7 +19,8 @@
   1.0.2   K Hoang      02/07/2020 Add support to ESP32-AT-command shields.
   1.0.3   K Hoang      28/07/2020 Add support to STM32F/L/H/G/WB/MP1 and Seeeduino SAMD21/SAMD51 boards. Add Packages' Patches.
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
-  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO
+  1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
+  1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when no WiFi configuration has been previously entered or when a button is pushed.
@@ -117,7 +118,7 @@ void enterConfigPortal()
   ESP_AT_wiFiManager.setAPStaticIPConfig(staticAP_IP);
 
   // Set static STA IP
-  ESP_AT_wiFiManager.setSTAStaticIPConfig(IPAddress(192, 168, 2, 114));
+  //ESP_AT_wiFiManager.setSTAStaticIPConfig(IPAddress(192, 168, 2, 114));
 
   //Check if there is stored WiFi router/password credentials.
   //If not found, device will remain in configuration mode until switched off via webserver.
