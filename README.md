@@ -88,7 +88,7 @@
     * [6.1 No Config Data => Config Portal](#61-no-config-data--config-portal)
     * [6.2 Forced Config => Config Portal](#62-forced-config--config-portal)
     * [6.3 Data Saved => Connect WiFi](#63-data-saved--connect-wifi)
-  * [7. ConfigOnStartup on MBED RASPBERRY_PI_PICO with ESP8266-AT shield](#7-configonswitch-on-mbed-raspberry_pi_pico-with-esp8266-at-shield)
+  * [7. ConfigOnStartup on MBED RASPBERRY_PI_PICO with ESP8266-AT shield](#7-configonstartup-on-mbed-raspberry_pi_pico-with-esp8266-at-shield)
   * [8. AutoConnect on MBED RASPBERRY_PI_PICO with ESP8266-AT shield](#8-autoconnect-on-mbed-raspberry_pi_pico-with-esp8266-at-shield)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
