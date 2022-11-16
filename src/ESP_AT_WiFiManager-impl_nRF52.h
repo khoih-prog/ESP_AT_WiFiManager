@@ -55,16 +55,17 @@ void ESP_AT_WiFiManager::resetBoard()
 void ESP_AT_WiFiManager::clearConfigData()
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
-  
+
   saveConfigData();
 }
 
 void ESP_AT_WiFiManager::loadConfigData()
 {
   DEBUG_WM1(F("LoadCfgFile "));
-  
+
   // file existed
-  file.open(CONFIG_FILENAME, FILE_O_READ);      
+  file.open(CONFIG_FILENAME, FILE_O_READ);
+
   if (!file)
   {
     DEBUG_WM1(F("failed"));
@@ -79,28 +80,28 @@ void ESP_AT_WiFiManager::loadConfigData()
       return;
     }
   }
- 
+
   file.seek(0);
   file.read((char *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
 
   DEBUG_WM1(F("OK"));
   file.close();
 }
-    
+
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
-  
+
   // Initialize Internal File System
   if (!InternalFS.begin())
   {
     DEBUG_WM1(F("InternalFS failed"));
     return false;
   }
-  
+
   // if config file exists, load
   loadConfigData();
-  
+
   int calChecksum = calcChecksum();
 
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
@@ -111,7 +112,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   {
     // Including Credentials CSum
     DEBUG_WM2(F("InitCfgFile,sz="), sizeof(ESP_AT_WM_Config));
-        
+
     memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
 
     // doesn't have any configuration
@@ -137,7 +138,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
-  
+
   // If "blank" or NULL, set false flag and exit
   if (!isWiFiConfigValid())
   {
@@ -145,7 +146,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
 
   hadConfigData = true;
-  
+
   return true;
 }
 
@@ -155,7 +156,7 @@ void ESP_AT_WiFiManager::saveConfigData()
 
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
-  
+
   DEBUG_WM2(F("WCSum=0x"), String(calChecksum, HEX));
 
   file.open(CONFIG_FILENAME, FILE_O_WRITE);
@@ -164,7 +165,7 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t*) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-    
+
     file.close();
     DEBUG_WM1(F("OK"));
   }
@@ -182,14 +183,14 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-    
+
     file.close();
     DEBUG_WM1(F("OK"));
   }
   else
   {
     DEBUG_WM1(F("failed"));
-  } 
+  }
 }
-    
+
 #endif      //ESP_AT_WiFiManager_impl_nRF52_h

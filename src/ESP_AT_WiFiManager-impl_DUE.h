@@ -54,12 +54,12 @@ void ESP_AT_WiFiManager::clearConfigData()
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
-   
+
   ESP_AT_WM_Configuration* dataPointer = (ESP_AT_WM_Configuration* ) dueFlashStorage.readAddress(EEPROM_START);
   memcpy(&ESP_AT_WM_Config, dataPointer, sizeof(ESP_AT_WM_Config));
-  
+
   int calChecksum = calcChecksum();
-  
+
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
 
   if ( (strncmp(ESP_AT_WM_Config.header, ESP_AT_BOARD_TYPE, strlen(ESP_AT_BOARD_TYPE)) != 0) ||
@@ -74,7 +74,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     strcpy(ESP_AT_WM_Config.host_name,        DEFAULT_HOST_NAME);
     // Don't need
     ESP_AT_WM_Config.checkSum = 0;
-   
+
     dueFlashStorage.write(EEPROM_START, (byte *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
 
     return false;
@@ -90,7 +90,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
-  
+
   // If "blank" or NULL, set false flag and exit
   if (!isWiFiConfigValid())
   {
@@ -98,7 +98,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
 
   hadConfigData = true;
-  
+
   return true;
 }
 
@@ -106,12 +106,12 @@ void ESP_AT_WiFiManager::saveConfigData()
 {
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
-  
+
   DEBUG_WM2(F("SaveDueFlash, CSum="), calChecksum);
-  
+
   dueFlashStorage.write(EEPROM_START, (byte *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
 }
-    
+
 #endif    //ESP_AT_WiFiManager_impl_DUE_h
 
 

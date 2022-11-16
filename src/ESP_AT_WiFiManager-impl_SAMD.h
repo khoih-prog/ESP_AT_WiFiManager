@@ -42,7 +42,7 @@ void ESP_AT_WiFiManager::resetBoard()
 {
   NVIC_SystemReset();
 }
-  
+
 void ESP_AT_WiFiManager::clearConfigData()
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
@@ -52,11 +52,11 @@ void ESP_AT_WiFiManager::clearConfigData()
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
-  
+
   ESP_AT_WM_Config = ESP_AT_WM_Config_data.read();
-  
+
   int calChecksum = calcChecksum();
-  
+
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
 
   if ( (strncmp(ESP_AT_WM_Config.header, ESP_AT_BOARD_TYPE, strlen(ESP_AT_BOARD_TYPE)) != 0) ||
@@ -87,7 +87,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
-  
+
   // If "blank" or NULL, set false flag and exit
   if (!isWiFiConfigValid())
   {
@@ -95,7 +95,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
 
   hadConfigData = true;
-  
+
   return true;
 }
 
@@ -103,10 +103,10 @@ void ESP_AT_WiFiManager::saveConfigData()
 {
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
-  
+
   DEBUG_WM2(F("SaveFlash,CSum="), calChecksum);
 
   ESP_AT_WM_Config_data.write(ESP_AT_WM_Config);
 }
-    
+
 #endif      //ESP_AT_WiFiManager_impl_SAMD_h

@@ -60,13 +60,13 @@ typedef struct
 } SCB_Type;
 
 void NVIC_SystemReset()
-{                  
-/* SCB Application Interrupt and Reset Control Register Definitions */
+{
+  /* SCB Application Interrupt and Reset Control Register Definitions */
 #define SCB_AIRCR_VECTKEY_Pos              16U                                      /*!< SCB AIRCR: VECTKEY Position */
 #define SCB_AIRCR_VECTKEY_Msk              (0xFFFFUL << SCB_AIRCR_VECTKEY_Pos)      /*!< SCB AIRCR: VECTKEY Mask */
-    
+
 #define SCB_AIRCR_SYSRESETREQ_Pos           2U                                      /*!< SCB AIRCR: SYSRESETREQ Position */
-#define SCB_AIRCR_SYSRESETREQ_Msk          (1UL << SCB_AIRCR_SYSRESETREQ_Pos)       /*!< SCB AIRCR: SYSRESETREQ Mask */    
+#define SCB_AIRCR_SYSRESETREQ_Msk          (1UL << SCB_AIRCR_SYSRESETREQ_Pos)       /*!< SCB AIRCR: SYSRESETREQ Mask */
 
 #define SCS_BASE            (0xE000E000UL)                            /*!< System Control Space Base Address */
 #define SysTick_BASE        (SCS_BASE +  0x0010UL)                    /*!< SysTick Base Address */
@@ -77,10 +77,10 @@ void NVIC_SystemReset()
 #define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick configuration struct */
 #define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struct */
 
-                              
+
   SCB->AIRCR  = ((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) | SCB_AIRCR_SYSRESETREQ_Msk);
 
-  while(true);
+  while (true);
 }
 
 void ESP_AT_WiFiManager::resetBoard()
@@ -94,17 +94,17 @@ void ESP_AT_WiFiManager::resetBoard()
 void ESP_AT_WiFiManager::clearConfigData()
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
-  
+
   saveConfigData();
 }
 
 void ESP_AT_WiFiManager::loadConfigData()
 {
   DEBUG_WM1(F("LoadCfgFile "));
-  
+
   // file existed
-  File file = FileFS.open(CONFIG_FILENAME, "r");    
-    
+  File file = FileFS.open(CONFIG_FILENAME, "r");
+
   if (!file)
   {
     DEBUG_WM1(F("failed"));
@@ -119,7 +119,7 @@ void ESP_AT_WiFiManager::loadConfigData()
       return;
     }
   }
- 
+
   file.seek(0);
   //file.read((char *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
   file.read((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
@@ -127,21 +127,21 @@ void ESP_AT_WiFiManager::loadConfigData()
   DEBUG_WM1(F("OK"));
   file.close();
 }
-    
+
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
-  
+
   // Initialize Internal File System
   if (!FileFS.begin())
   {
     DEBUG_WM1(F("LittleFS failed"));
     return false;
   }
-  
+
   // if config file exists, load
   loadConfigData();
-  
+
   int calChecksum = calcChecksum();
 
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
@@ -152,7 +152,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   {
     // Including Credentials CSum
     DEBUG_WM2(F("InitCfgFile,sz="), sizeof(ESP_AT_WM_Config));
-        
+
     memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
 
     // doesn't have any configuration
@@ -178,7 +178,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
-  
+
   // If "blank" or NULL, set false flag and exit
   if (!isWiFiConfigValid())
   {
@@ -186,7 +186,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
 
   hadConfigData = true;
-  
+
   return true;
 }
 
@@ -196,7 +196,7 @@ void ESP_AT_WiFiManager::saveConfigData()
 
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
-  
+
   DEBUG_WM2(F("WCSum=0x"), String(calChecksum, HEX));
 
   File file = FileFS.open(CONFIG_FILENAME, "w");
@@ -205,7 +205,7 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t*) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-    
+
     file.close();
     DEBUG_WM1(F("OK"));
   }
@@ -223,14 +223,14 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-    
+
     file.close();
     DEBUG_WM1(F("OK"));
   }
   else
   {
     DEBUG_WM1(F("failed"));
-  } 
+  }
 }
-    
+
 #endif      //ESP_AT_WiFiManager_impl_RPi_Pico_h
