@@ -176,7 +176,7 @@ This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiM
 #### WIZNET_WIZFI360_EVB_PICO
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/ESP_AT_WiFiManager/raw/master/pics/WIZNET_WIZFI360_EVB_PICO.png">
+    <img src="https://github.com/khoih-prog/ESP_AT_WiFiManager/raw/master/Images/WIZNET_WIZFI360_EVB_PICO.png">
 </p>
 
 
@@ -192,7 +192,7 @@ This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiM
 #### WIZFI360
  
 <p align="center">
-    <img src="https://github.com/khoih-prog/ESP_AT_WiFiManager/raw/master/pics/wizfi360-pa.png">
+    <img src="https://github.com/khoih-prog/ESP_AT_WiFiManager/raw/master/Images/wizfi360-pa.png">
 </p>
 
  
