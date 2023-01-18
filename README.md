@@ -9,6 +9,7 @@
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
+
 ---
 ---
 
@@ -17,6 +18,7 @@
 * [Why do we need this ESP_AT_WiFiManager library](#why-do-we-need-this-esp_at_wifimanager-library)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
+  * [Currently Supported AT-command shields](#currently-supported-at-command-shields)
 * [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Important Notes about AT Firmwares](#important-notes-about-at-firmwares)
@@ -92,6 +94,7 @@
     * [6.3 Data Saved => Connect WiFi](#63-data-saved--connect-wifi)
   * [7. ConfigOnStartup on MBED RASPBERRY_PI_PICO with ESP8266-AT shield](#7-configonstartup-on-mbed-raspberry_pi_pico-with-esp8266-at-shield)
   * [8. AutoConnect on MBED RASPBERRY_PI_PICO with ESP8266-AT shield](#8-autoconnect-on-mbed-raspberry_pi_pico-with-esp8266-at-shield)
+  * [9. ConfigOnStartup with ESP32-AT WiFi module on WIZNET_WIZFI360_EVB_PICO](#9-ConfigOnStartup-with-ESP32-AT-WiFi-module-on-WIZNET_WIZFI360_EVB_PICO)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
@@ -168,6 +171,31 @@ This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiM
 
  8. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
  
+ 9. **WIZNET_WIZFI360_EVB_PICO** using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico)
+
+#### WIZNET_WIZFI360_EVB_PICO
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP_AT_WiFiManager/raw/master/pics/WIZNET_WIZFI360_EVB_PICO.png">
+</p>
+
+
+---
+
+#### Currently Supported AT-command shields
+
+ 1. `ESP8266-AT-command` shield
+ 2. `ESP32-AT-command` shield
+ 3. `W600` and `WIS600-01S` AT-command shield
+ 4. `WizFi360` AT-command shield
+ 
+#### WIZFI360
+ 
+<p align="center">
+    <img src="https://github.com/khoih-prog/ESP_AT_WiFiManager/raw/master/pics/wizfi360-pa.png">
+</p>
+
+ 
 ---
 ---
 
@@ -176,17 +204,16 @@ This [**ESP_AT_WiFiManager** library](https://github.com/khoih-prog/ESP_AT_WiFiM
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Arduino AVR core 1.8.6+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
- 3. [`Arduino Core for STM32 v2.3.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.). [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
- 4. [`Teensy core 1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
+ 3. [`Arduino Core for STM32 v2.4.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.). [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+ 4. [`Teensy core v1.57+`](https://github.com/PaulStoffregen/cores) for Teensy 4.1.  [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/cores.svg)](https://github.com/PaulStoffregen/cores/releases/latest)
  5. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  6. [`Arduino SAMD core 1.8.13+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
  7. [`Adafruit SAMD core 1.7.11+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  8. [`Seeeduino SAMD core 1.8.3+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
- 
  9. [`Adafruit nRF52 v1.3.0`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
-10. [`Arduino mbed_rp2040 core 3.4.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-11. [`Earle Philhower's arduino-pico core v2.6.3+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
-12. [`ESP_AT_WiFiManager library v1.6.0+`](https://github.com/khoih-prog/ESP_AT_WiFiManager) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_AT_WiFiManager.svg?)](https://www.ardu-badge.com/ESP_AT_WiFiManager)
+10. [`Arduino mbed_rp2040 core 3.5.4+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+11. [`Earle Philhower's arduino-pico core v2.7.1+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+12. [`ESP8266_AT_WebServer library v1.7.1+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to be able to support ESP32-AT shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
 13. [`FlashStorage_SAMD library v1.3.2+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest). Or [`Platform.io FlashStorage_SAMD library v1.0.0+`](https://platformio.org/lib/show/11242/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
 14. [`FlashStorage_STM32 library v1.2.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
 15. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
@@ -864,547 +891,11 @@ ESP_AT_wiFiManager.setRemoveDuplicateAPs(false);
 
 #### 1. File [ConfigOnSwitch.ino](examples/ConfigOnSwitch/ConfigOnSwitch.ino)
 
-```cpp
-// Credits of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for this simple yet effective method
-// For some STM32, there is only definition of Serial in variant.h, and is used for Serial/USB Debugging
-// For example, in Nucleo-144 F767ZI original variant.h
-//
-// #define SERIAL_PORT_MONITOR     Serial
-// #define SERIAL_PORT_HARDWARE    Serial
-//
-// To use ESP8266/ESP32-AT, we need another Serial, such as Serial1
-// To do this, first, in corresponding variant.h, modify as follows:
-
-// #define SERIAL_PORT_HARDWARE    Serial1
-//
-// then assign pins D0 = RX/D1 = TX to be Hardware Serial1 by putting in sketch as follows:
-//
-// #define EspSerial      SERIAL_PORT_HARDWARE    //Serial1
-// HardwareSerial         Serial1(D0, D1);
-//
-// This must be included in defines.h for each board you'd like to use ESPSerial as Serial1
-//
-// The pin usage must be modified according to your boards.
-
-#include "defines.h"
-
-/* Trigger for inititating config mode is Pin D3 and also flash button on NodeMCU
-   Flash button is convenient to use but if it is pressed it will stuff up the serial port device driver
-   until the computer is rebooted on windows machines.
-*/
-const int TRIGGER_PIN = 22;   // Change the PIN to whatever you'd like
-/*
-   Alternative trigger pin. Needs to be connected to a button to use this pin. It must be a momentary connection
-   not connected permanently to ground. Either trigger pin will work.
-*/
-const int TRIGGER_PIN2 = 23; // Change the PIN to whatever you'd like
-
-// Indicates whether ESP has WiFi credentials saved from previous session
-bool initialConfig = false;
-
-void heartBeatPrint()
-{
-  static int num = 1;
-
-  if (WiFi.status() == WL_CONNECTED)
-    Serial.print("H");        // H means connected to WiFi
-  else
-    Serial.print("F");        // F means not connected to WiFi
-
-  if (num == 80)
-  {
-    Serial.println();
-    num = 1;
-  }
-  else if (num++ % 10 == 0)
-  {
-    Serial.print(" ");
-  }
-}
-
-void check_status()
-{
-  static unsigned long checkstatus_timeout = 0;
-
-#define HEARTBEAT_INTERVAL    10000L
-  // Print heartbeat every HEARTBEAT_INTERVAL (10) seconds.
-  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-  {
-    heartBeatPrint();
-    checkstatus_timeout = millis() + HEARTBEAT_INTERVAL;
-  }
-}
-
-void enterConfigPortal()
-{
-  //Local initialization. Once its business is done, there is no need to keep it around
-  ESP_AT_WiFiManager ESP_AT_wiFiManager;
-
-  ESP_AT_wiFiManager.setDebugOutput(true);
-
-  ESP_AT_wiFiManager.setMinimumSignalQuality(-1);
-
-  ESP_AT_wiFiManager.setAPChannel(1);
-
-  // Default AP IP is 192.168.4.1. Uncomment to use different AP IP
-  ESP_AT_wiFiManager.setAPStaticIPConfig(staticAP_IP);
-
-  // Set static STA IP
-  ESP_AT_wiFiManager.setSTAStaticIPConfig(IPAddress(192, 168, 2, 114));
-
-  //Check if there is stored WiFi router/password credentials.
-  //If not found, device will remain in configuration mode until switched off via webserver.
-  Serial.println("Opening Config Portal.");
-
-  Router_SSID = ESP_AT_wiFiManager.WiFi_SSID();
-  Router_Pass = ESP_AT_wiFiManager.WiFi_Pass();
-
-  if ( (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
-  {    
-    if (ESP_AT_wiFiManager.connectWifi(Router_SSID, Router_Pass) == WL_CONNECTED)
-    {
-      Serial.println(F("Got stored Credentials. Try to connect first"));
-      
-      return;
-    }
-    
-    ESP_AT_wiFiManager.setConfigPortalTimeout(60); //If no access point name has been previously entered disable timeout.
-    Serial.println(F("Got stored Credentials but can't connect. Timeout 60s"));
-  }
-  else
-    Serial.println(F("No stored or not valid Credentials. No timeout"));
-
-  // SSID to uppercase
-  ssid.toUpperCase();
-
-  //Starts an AP and goes into a blocking loop awaiting configuration
-  Serial.println("Start Config Portal, SSID = " + ssid + ", Pass = " + password);
-
-  digitalWrite(LOCAL_PIN_LED, LED_ON); // Turn led on as we enter Config Portal
-
-  if (!ESP_AT_wiFiManager.startConfigPortal((const char *) ssid.c_str(), password))
-    Serial.println(F("Not connected to WiFi but continuing anyway."));
-  else
-    Serial.println(F("WiFi connected...yeey"));
-
-  digitalWrite(LOCAL_PIN_LED, LED_OFF); // Turn led off as we exit Config Portal
-}
-
-void setup()
-{
-  // put your setup code here, to run once:
-  // initialize the LED digital pin as an output.
-  pinMode(TRIGGER_PIN, INPUT_PULLUP);
-  pinMode(TRIGGER_PIN2, INPUT_PULLUP);
-  pinMode(LOCAL_PIN_LED, OUTPUT);
-  digitalWrite(LOCAL_PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
-
-  Serial.begin(115200);
-  while (!Serial);
-
-  unsigned long startedAt = millis();
-
-#if USE_ESP32_AT
-  Serial.println("\nStart ConfigOnSwitch with ESP32-AT WiFi module on " + String(BOARD_NAME));
-#else
-  Serial.println("\nStart ConfigOnSwitch with ESP8266-AT WiFi module on " + String(BOARD_NAME));
-#endif
-
-  Serial.println(ESP_AT_WIFIMANAGER_VERSION);
-  
-  // initialize serial for ESP module
-  EspSerial.begin(115200);
-
-  // initialize ESP module
-  WiFi.init(&EspSerial);
-
-  // check for the presence of the shield
-  if (WiFi.status() == WL_NO_SHIELD)
-  {
-    Serial.println(F("WiFi shield not present"));
-    // don't continue
-    while (true);
-  }
-
-  enterConfigPortal();
-
-  // For some unknown reason webserver can only be started once per boot up
-  // so webserver can not be used again in the sketch.
-#define WIFI_CONNECT_TIMEOUT        30000L
-#define WHILE_LOOP_DELAY            200L
-#define WHILE_LOOP_STEPS            (WIFI_CONNECT_TIMEOUT / ( 3 * WHILE_LOOP_DELAY ))
-
-  startedAt = millis();
-
-  while ( (WiFi.status() != WL_CONNECTED) && (millis() - startedAt < WIFI_CONNECT_TIMEOUT ) )
-  {
-    int i = 0;
-    while ((!WiFi.status() || WiFi.status() >= WL_DISCONNECTED) && i++ < WHILE_LOOP_STEPS)
-    {
-      delay(WHILE_LOOP_DELAY);
-    }
-  }
-
-  Serial.print(F("After waiting "));
-  Serial.print((millis() - startedAt) / 1000);
-  Serial.print(F(" secs in setup(), connect result is "));
-
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    Serial.print(F("connected. Local IP: "));
-    Serial.println(WiFi.localIP());
-  }
-}
-
-void loop()
-{
-  // is configuration portal requested?
-  if ((digitalRead(TRIGGER_PIN) == LOW) || (digitalRead(TRIGGER_PIN2) == LOW))
-  {
-    Serial.println("\nConfig Portal requested.");
-    enterConfigPortal();
-  }
-
-  // put your main code here, to run repeatedly
-  check_status();
-}
-```
+https://github.com/khoih-prog/ESP_AT_WiFiManager/blob/4d5413918826a1e747b1d2bb6807153ef334652d/examples/ConfigOnSwitch/ConfigOnSwitch.ino#L25-L241
 
 #### 2. File [defines.h](examples/ConfigOnSwitch/defines.h)
 
-```cpp
-#ifndef defines_h
-#define defines_h
-
-#define DEBUG_ESP_AT_WiFiManager_PORT Serial
-
-// Debug Level from 0 to 4
-#define _ESP_AT_LOGLEVEL_       1
-#define DEBUG_WIFIMGR           true  //false
-
-// Uncomment to use ESP32-AT commands
-//#define USE_ESP32_AT      true
-
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-  #if defined(ESP8266_AT_USE_SAMD)
-    #undef ESP8266_AT_USE_SAMD
-  #endif
-  #define ESP8266_AT_USE_SAMD      true
-#endif
-
-#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
-      defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #if defined(ESP8266_AT_USE_NRF528XX)
-    #undef ESP8266_AT_USE_NRF528XX
-  #endif
-  #define ESP8266_AT_USE_NRF528XX      true
-#endif
-
-#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-  #if defined(ESP8266_AT_USE_SAM_DUE)
-    #undef ESP8266_AT_USE_SAM_DUE
-  #endif
-  #define ESP8266_AT_USE_SAM_DUE      true
-#endif
-
-#if  ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
-       defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
-       defined(STM32WB) || defined(STM32MP1) || defined(STM32L5))
-  #if defined(ESP8266_AT_USE_STM32)
-    #undef ESP8266_AT_USE_STM32
-  #endif
-  #define ESP8266_AT_USE_STM32      true
-#endif
-
-#ifdef CORE_TEENSY
-  // For Teensy 4.1/4.0
-  #define EspSerial Serial2   //Serial2, Pin RX2 : 7, TX2 : 8
-  
-  #if defined(__IMXRT1062__)
-    // For Teensy 4.1/4.0
-    #define BOARD_TYPE      "TEENSY 4.1/4.0"
-  #elif defined(__MK66FX1M0__)
-    #define BOARD_TYPE "Teensy 3.6"
-  #elif defined(__MK64FX512__)
-    #define BOARD_TYPE "Teensy 3.5"
-  #elif defined(__MKL26Z64__)
-    #define BOARD_TYPE "Teensy LC"
-  #elif defined(__MK20DX256__)
-    #define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
-  #elif defined(__MK20DX128__)
-    #define BOARD_TYPE "Teensy 3.0"
-  #elif defined(__AVR_AT90USB1286__)
-    #error Teensy 2.0++ not supported yet
-  #elif defined(__AVR_ATmega32U4__)
-    #error Teensy 2.0 not supported yet
-  #else
-    // For Other Boards
-    #define BOARD_TYPE      "Unknown Teensy Board"
-  #endif
-
-#elif defined(ESP8266_AT_USE_SAMD)
-  // For SAMD
-  #define EspSerial Serial1
-  
-  #if defined(ARDUINO_SAMD_ZERO)
-    #define BOARD_TYPE      "SAMD Zero"
-  #elif defined(ARDUINO_SAMD_MKR1000)
-    #define BOARD_TYPE      "SAMD MKR1000"
-  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
-    #define BOARD_TYPE      "SAMD MKRWIFI1010"
-  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
-    #define BOARD_TYPE      "SAMD NANO_33_IOT"
-  #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
-  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-    #define BOARD_TYPE      "SAMD MKRWAN13X0"
-  #elif defined(ARDUINO_SAMD_MKRGSM1400)
-    #define BOARD_TYPE      "SAMD MKRGSM1400"
-  #elif defined(ARDUINO_SAMD_MKRNB1500)
-    #define BOARD_TYPE      "SAMD MKRNB1500"
-  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
-  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-  #elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
-  #elif defined(ADAFRUIT_METRO_M0_EXPRESS)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
-  #elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
-  #elif defined(ADAFRUIT_GEMMA_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
-  #elif defined(ADAFRUIT_TRINKET_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
-  #elif defined(ADAFRUIT_ITSYBITSY_M0)
-    #define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
-  #elif defined(ARDUINO_SAMD_HALLOWING_M0)
-    #define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
-  #elif defined(ADAFRUIT_METRO_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
-  #elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
-  #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
-  #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-  #elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
-  #elif defined(ADAFRUIT_PYPORTAL)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
-  #elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
-  #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
-  #elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
-  #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
-  #elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
-  #elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
-  #elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
-  #elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
-  #elif defined(SEEED_WIO_TERMINAL)
-    #define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
-  #elif defined(SEEED_FEMTO_M0)
-    #define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
-  #elif defined(SEEED_XIAO_M0)
-    #define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
-  #elif defined(Wio_Lite_MG126)
-    #define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
-  #elif defined(WIO_GPS_BOARD)
-    #define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
-  #elif defined(SEEEDUINO_ZERO)
-    #define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
-  #elif defined(SEEEDUINO_LORAWAN)
-    #define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
-  #elif defined(SEEED_GROVE_UI_WIRELESS)
-    #define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
-  #elif defined(__SAMD21E18A__)
-    #define BOARD_TYPE      "SAMD21E18A"
-  #elif defined(__SAMD21G18A__)
-    #define BOARD_TYPE      "SAMD21G18A"
-  #elif defined(__SAMD51G19A__)
-    #define BOARD_TYPE      "SAMD51G19A"
-  #elif defined(__SAMD51J19A__)
-    #define BOARD_TYPE      "SAMD51J19A"
-  #elif defined(__SAMD51J20A__)
-    #define BOARD_TYPE      "SAMD51J20A"
-  #elif defined(__SAM3X8E__)
-    #define BOARD_TYPE      "SAM3X8E"
-  #elif defined(__CPU_ARC__)
-    #define BOARD_TYPE      "CPU_ARC"
-  #elif defined(__SAMD51__)
-    #define BOARD_TYPE      "SAMD51"
-  #else
-    #define BOARD_TYPE      "SAMD Unknown"
-  #endif
-
-#elif (ESP8266_AT_USE_NRF528XX)
-
-  #if defined(NRF52840_FEATHER)
-    #define BOARD_TYPE      "NRF52840_FEATHER_EXPRESS"
-  #elif defined(NRF52832_FEATHER)
-    #define BOARD_TYPE      "NRF52832_FEATHER"
-  #elif defined(NRF52840_FEATHER_SENSE)
-    #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
-  #elif defined(NRF52840_ITSYBITSY)
-    #define BOARD_TYPE      "NRF52840_ITSYBITSY_EXPRESS"
-  #elif defined(NRF52840_CIRCUITPLAY)
-    #define BOARD_TYPE      "NRF52840_CIRCUIT_PLAYGROUND"
-  #elif defined(NRF52840_CLUE)
-    #define BOARD_TYPE      "NRF52840_CLUE"
-  #elif defined(NRF52840_METRO)
-    #define BOARD_TYPE      "NRF52840_METRO_EXPRESS"
-  #elif defined(NRF52840_PCA10056)
-    #define BOARD_TYPE      "NORDIC_NRF52840DK"
-  #elif defined(NINA_B302_ublox)
-    #define BOARD_TYPE      "NINA_B302_ublox"
-  #elif defined(NINA_B112_ublox)
-    #define BOARD_TYPE      "NINA_B112_ublox"
-  #elif defined(PARTICLE_XENON)
-    #define BOARD_TYPE      "PARTICLE_XENON"
-  #elif defined(MDBT50Q_RX)
-    #define BOARD_TYPE      "RAYTAC_MDBT50Q_RX"
-  #elif defined(ARDUINO_NRF52_ADAFRUIT)
-    #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
-  #else
-    #define BOARD_TYPE      "nRF52 Unknown"
-  #endif
-
-#define EspSerial Serial1
-
-#elif defined(ESP8266_AT_USE_SAM_DUE)
-  // For SAM DUE
-  #define EspSerial Serial1
-  #define BOARD_TYPE      "SAM DUE"
-
-#elif defined(ESP8266_AT_USE_STM32)
-  // For STM32
-  #warning EspSerial using SERIAL_PORT_HARDWARE, can be Serial or Serial1. See your board variant.h
-  #define EspSerial     SERIAL_PORT_HARDWARE    //Serial1
-
-  #if defined(STM32F0)
-    #warning STM32F0 board selected
-    #define BOARD_TYPE  "STM32F0"
-  #elif defined(STM32F1)
-    #warning STM32F1 board selected
-    #define BOARD_TYPE  "STM32F1"
-  #elif defined(STM32F2)
-    #warning STM32F2 board selected
-    #define BOARD_TYPE  "STM32F2"
-  #elif defined(STM32F3)
-    #warning STM32F3 board selected
-    #define BOARD_TYPE  "STM32F3"
-  #elif defined(STM32F4)
-    #warning STM32F4 board selected
-    #define BOARD_TYPE  "STM32F4"
-  #elif defined(STM32F7)
-
-    #if defined(ARDUINO_NUCLEO_F767ZI)
-      #warning Nucleo-144 NUCLEO_F767ZI board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
-      #define BOARD_TYPE  "NUCLEO_F767ZI"
-      // RX TX
-      HardwareSerial Serial1(D0, D1);
-    #else
-    
-      #warning STM32F7 board selected
-      #define BOARD_TYPE  "STM32F7"
-
-    #endif
-    
-  #elif defined(STM32L0)
-    #if defined(ARDUINO_NUCLEO_L053R8)
-      #warning Nucleo-64 NUCLEO_L053R8 board selected, using HardwareSerial Serial1 @ pin D0/RX and D1/TX
-      #define BOARD_TYPE  "NUCLEO_L053R8"
-      // RX TX
-      HardwareSerial Serial1(D0, D1);   // (PA3, PA2);
-    #else
-    
-      #warning STM32L0 board selected
-      #define BOARD_TYPE  "STM32L0"
-
-    #endif
-    
-  #elif defined(STM32L1)
-    #warning STM32L1 board selected
-    #define BOARD_TYPE  "STM32L1"
-  #elif defined(STM32L4)
-    #warning STM32L4 board selected
-    #define BOARD_TYPE  "STM32L4"
-  #elif defined(STM32L5)
-    #warning STM32L5 board selected
-    #define BOARD_TYPE  "STM32L5"  
-  #elif defined(STM32H7)
-    #warning STM32H7 board selected
-    #define BOARD_TYPE  "STM32H7"
-  #elif defined(STM32G0)
-    #warning STM32G0 board selected
-    #define BOARD_TYPE  "STM32G0"
-  #elif defined(STM32G4)
-    #warning STM32G4 board selected
-    #define BOARD_TYPE  "STM32G4"
-  #elif defined(STM32WB)
-    #warning STM32WB board selected
-    #define BOARD_TYPE  "STM32WB"
-  #elif defined(STM32MP1)
-    #warning STM32MP1 board selected
-    #define BOARD_TYPE  "STM32MP1"
-  #else
-    #warning STM32 unknown board selected
-    #define BOARD_TYPE  "STM32 Unknown"
-  #endif
-
-#else
-  // For Mega
-  #define EspSerial Serial3
-  #define BOARD_TYPE      "AVR Mega"
-#endif
-
-#ifndef BOARD_NAME
-  #define BOARD_NAME    BOARD_TYPE
-#endif
-
-// Must be before #include <ESP_AT_WiFiManager.h>
-#define EEPROM_START        0
-
-#include <ESP_AT_WiFiManager.h>              //https://github.com/khoih-prog/ESP_AT_WiFiManager
-
-// Your Mega <-> ESP8266 baud rate:
-#define ESP8266_BAUD 115200
-
-// SSID and PW for Config Portal
-#ifdef CORE_TEENSY
-  String ssid = "ESP_AT_" + String(0x1ABCDEF, HEX);
-#else
-  String ssid = "ESP_AT_" + String(0xABCDEF, HEX);
-#endif
-
-const char* password = "ESP_AT_PW";
-
-IPAddress staticAP_IP = IPAddress(192, 168, 100, 1);
-
-// SSID and PW for your Router
-String Router_SSID;
-String Router_Pass;
-
-// Onboard LED I/O pin on board
-const int LOCAL_PIN_LED = 13; // Pin 13, Controls the onboard LED.
-
-#define LED_ON    HIGH
-#define LED_OFF   LOW
-
-#endif    //defines_h
-```
+https://github.com/khoih-prog/ESP_AT_WiFiManager/blob/4d5413918826a1e747b1d2bb6807153ef334652d/examples/ConfigOnSwitch/defines.h#L15-L395
 
 ---
 
@@ -1418,7 +909,7 @@ This is the terminal output when running [ConfigOnSwitch](examples/ConfigOnSwitc
 
 ```
 Start ConfigOnSwitch on NRF52840_ITSYBITSY
-ESP_AT_WiFiManager v1.1.0
+ESP_AT_WiFiManager v1.4.0
 Opening Config Portal. *WM: LoadCfgFile 
 *WM: OK
 *WM: ======= Start Stored Config Data =======
@@ -1481,7 +972,7 @@ HH
 
 ```
 Start ConfigOnSwitch on NRF52840_ITSYBITSY
-ESP_AT_WiFiManager v1.1.0
+ESP_AT_WiFiManager v1.4.0
 Opening Config Portal. *WM: LoadCfgFile 
 *WM: OK
 *WM: ======= Start Stored Config Data =======
@@ -1513,7 +1004,7 @@ This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStar
 
 ```
 Start ConfigOnStartup on SAM DUE
-ESP_AT_WiFiManager v1.1.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] AT+RST
 [ESP_AT] ATE0
 [ESP_AT] Use ESP32-AT Command
@@ -1598,7 +1089,7 @@ This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStar
 
 ```
 Start ConfigOnStartup on NUCLEO_F767ZI
-ESP_AT_WiFiManager v1.1.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal. *WM: EEPROMsz:1024
 *WM: CCSum=0x65a0,RCSum=0xffffffff
@@ -1658,6 +1149,7 @@ This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStar
 
 ```
 Start ConfigOnStartup on SEEED_XIAO_M0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal. *WM: CCSum=0x0,RCSum=0x0
 *WM: CCSum=0x7f4,RCSum=0x0
@@ -1712,7 +1204,7 @@ This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStar
 
 ```
 Start ConfigOnStartup with ESP8266-AT WiFi module on NUCLEO_F767ZI
-ESP_AT_WiFiManager v1.1.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: EEPROMsz:1024
@@ -1733,7 +1225,7 @@ H
 
 ```
 Start ConfigOnStartup with ESP8266-AT WiFi module on NUCLEO_F767ZI
-ESP_AT_WiFiManager v1.1.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: EEPROMsz:1024
@@ -1776,7 +1268,7 @@ This is the terminal output when running [ConfigOnSwitch](examples/ConfigOnSwitc
 
 ```
 Start ConfigOnSwitch with ESP8266-AT WiFi module on RASPBERRY_PI_PICO
-ESP_AT_WiFiManager v1.2.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: LoadCfgFile 
@@ -1850,7 +1342,7 @@ HHH
 
 ```
 Start ConfigOnSwitch with ESP8266-AT WiFi module on RASPBERRY_PI_PICO
-ESP_AT_WiFiManager v1.2.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: LoadCfgFile 
@@ -1918,7 +1410,7 @@ H
 
 ```
 Start ConfigOnSwitch with ESP8266-AT WiFi module on RASPBERRY_PI_PICO
-ESP_AT_WiFiManager v1.2.0
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: LoadCfgFile 
@@ -1948,7 +1440,7 @@ This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStar
 
 ```
 Start ConfigOnStartup with ESP8266-AT WiFi module on MBED RASPBERRY_PI_PICO
-ESP_AT_WiFiManager v1.3.1
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: LittleFS size (KB) = 64
@@ -2030,7 +1522,7 @@ This is the terminal output when running [AutoConnect](examples/AutoConnect) exa
 
 ```
 Start AutoConnect with ESP8266-AT WiFi module on MBED RASPBERRY_PI_PICO
-ESP_AT_WiFiManager v1.3.1
+ESP_AT_WiFiManager v1.4.0
 [ESP_AT] Use ES8266-AT Command
 Opening Config Portal.
 *WM: LittleFS size (KB) = 64
@@ -2050,6 +1542,34 @@ Opening Config Portal.
 *WM: Connect result: WL_CONNECTED
 Got stored Credentials. Try to connect first
 Exit Config Portal
+HHHHHHHHH
+```
+
+---
+
+### 9. ConfigOnStartup with ESP32-AT WiFi module on WIZNET_WIZFI360_EVB_PICO
+
+This is the terminal output when running [ConfigOnStartup](examples/ConfigOnStartup) example using **WIZNET_WIZFI360_EVB_PICO with WIZFI360 shield**.
+
+
+```
+Start ConfigOnStartup with ESP32-AT WiFi module on WIZNET_WIZFI360_EVB_PICO
+ESP_AT_WiFiManager v1.4.0
+[ESP_AT] Using ESP32-AT Command
+Opening Config Portal.
+*WM: LoadCfgFile 
+*WM: OK
+*WM: CCSum=0x8f6,RCSum=0x8f6
+*WM: ======= Start Stored Config Data =======
+*WM: Header = ESP_AT, SSID = HueNet, PW = 12345678
+*WM: Host Name = RP2040
+*WM: Connect wifi with new params
+*WM: Data cleared
+[ESP_AT] Using ESP32-AT Command
+*WM: Static IP : 192.168.2.114
+*WM: Connect result: WL_CONNECTED
+Got stored Credentials. Try to connect first
+After waiting 0 secs in setup(), connect result is connected. Local IP: 192.168.2.114
 HHHHHHHHH
 ```
 
@@ -2087,6 +1607,7 @@ Submit issues to: [ESP_AT_WiFiManager issues](https://github.com/khoih-prog/ESP_
 1. Add support to more boards
 2. Add more examples
 
+---
 
 ### DONE
 
@@ -2107,6 +1628,8 @@ Submit issues to: [ESP_AT_WiFiManager issues](https://github.com/khoih-prog/ESP_
 15. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
 16. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
 17. Add support to **Arduino Nano RP2040 Connect** using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+18. Add support to WizNet `WizFi360`, such as `WIZNET_WIZFI360_EVB_PICO` using `arduino-pico` core
+
 
 ---
 ---
