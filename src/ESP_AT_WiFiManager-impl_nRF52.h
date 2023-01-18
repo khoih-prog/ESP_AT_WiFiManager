@@ -2,20 +2,16 @@
   ESP_AT_WiFiManager-impl_nRF52.h
   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
 
-  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-
-  Inspired by:
-  http://www.esp8266.com/viewtopic.php?f=29&t=2520
-  https://github.com/chriscook8/esp-arduino-apboot
-  https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` 
+  shields to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
 
   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
   and from Ken Taylor https://github.com/kentaylor
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.3.1
+  
+  Version: 1.4.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -26,13 +22,18 @@
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
   1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
-  1.3.1   K Hoang      10/10/2021  Update `platform.ini` and `library.json`
+  1.3.1   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.4.0   K Hoang      28/05/2021 Add support to WizNet WizFi360 such as WIZNET_WIZFI360_EVB_PICO using arduino-pico core
  *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_impl_nRF52_h
 #define ESP_AT_WiFiManager_impl_nRF52_h
 
+//////////////////////////////////////////////
+
 #define DEFAULT_HOST_NAME     "nRF52"
+
+//////////////////////////////////////////////
 
 //Use LittleFS for nRF52
 #include <Adafruit_LittleFS.h>
@@ -45,6 +46,8 @@ File file(InternalFS);
 #define  CONFIG_FILENAME              ("/wm_config.dat")
 #define  CONFIG_FILENAME_BACKUP       ("/wm_config.bak")
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::resetBoard()
 {
   delay(1000);
@@ -52,20 +55,23 @@ void ESP_AT_WiFiManager::resetBoard()
   NVIC_SystemReset();
 }
 
+//////////////////////////////////////////////
+
 void ESP_AT_WiFiManager::clearConfigData()
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
-
+  
   saveConfigData();
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::loadConfigData()
 {
   DEBUG_WM1(F("LoadCfgFile "));
-
+  
   // file existed
-  file.open(CONFIG_FILENAME, FILE_O_READ);
-
+  file.open(CONFIG_FILENAME, FILE_O_READ);      
   if (!file)
   {
     DEBUG_WM1(F("failed"));
@@ -80,7 +86,7 @@ void ESP_AT_WiFiManager::loadConfigData()
       return;
     }
   }
-
+ 
   file.seek(0);
   file.read((char *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
 
@@ -88,20 +94,22 @@ void ESP_AT_WiFiManager::loadConfigData()
   file.close();
 }
 
+//////////////////////////////////////////////
+
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
-
+  
   // Initialize Internal File System
   if (!InternalFS.begin())
   {
     DEBUG_WM1(F("InternalFS failed"));
     return false;
   }
-
+  
   // if config file exists, load
   loadConfigData();
-
+  
   int calChecksum = calcChecksum();
 
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
@@ -112,7 +120,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   {
     // Including Credentials CSum
     DEBUG_WM2(F("InitCfgFile,sz="), sizeof(ESP_AT_WM_Config));
-
+        
     memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
 
     // doesn't have any configuration
@@ -138,7 +146,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
-
+  
   // If "blank" or NULL, set false flag and exit
   if (!isWiFiConfigValid())
   {
@@ -146,9 +154,11 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
 
   hadConfigData = true;
-
+  
   return true;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::saveConfigData()
 {
@@ -156,7 +166,7 @@ void ESP_AT_WiFiManager::saveConfigData()
 
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
-
+  
   DEBUG_WM2(F("WCSum=0x"), String(calChecksum, HEX));
 
   file.open(CONFIG_FILENAME, FILE_O_WRITE);
@@ -165,7 +175,7 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t*) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-
+    
     file.close();
     DEBUG_WM1(F("OK"));
   }
@@ -183,14 +193,16 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-
+    
     file.close();
     DEBUG_WM1(F("OK"));
   }
   else
   {
     DEBUG_WM1(F("failed"));
-  }
+  } 
 }
+
+//////////////////////////////////////////////
 
 #endif      //ESP_AT_WiFiManager_impl_nRF52_h

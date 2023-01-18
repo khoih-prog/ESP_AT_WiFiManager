@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
   AutoConnect.ino
   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-  
+
   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-  
+
   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
   and from Ken Taylor https://github.com/kentaylor
-  
+
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
  *****************************************************************************************************************************/
@@ -59,6 +59,7 @@ void check_status()
   static ulong checkstatus_timeout = 0;
 
 #define HEARTBEAT_INTERVAL    10000L
+
   // Print hearbeat every HEARTBEAT_INTERVAL (10) seconds.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
@@ -76,6 +77,8 @@ void enterConfigPortal()
 
   ESP_AT_wiFiManager.setMinimumSignalQuality(-1);
 
+  // 0 for random channel
+  //ESP_AT_wiFiManager.setAPChannel(0);
   ESP_AT_wiFiManager.setAPChannel(1);
 
   // Default AP IP is 192.168.4.1. Uncomment to use different AP IP
@@ -92,14 +95,14 @@ void enterConfigPortal()
   Router_Pass = ESP_AT_wiFiManager.WiFi_Pass();
 
   if ( (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
-  {    
+  {
     if (ESP_AT_wiFiManager.connectWifi(Router_SSID, Router_Pass) == WL_CONNECTED)
     {
       Serial.println(F("Got stored Credentials. Try to connect first"));
-      
+
       return;
     }
-    
+
     ESP_AT_wiFiManager.setConfigPortalTimeout(60); //If no access point name has been previously entered disable timeout.
     Serial.println(F("Got stored Credentials but can't connect. Timeout 60s"));
   }
@@ -136,19 +139,22 @@ void setup()
   // put your setup code here, to run once:
   // initialize the LED digital pin as an output.
   pinMode(LOCAL_PIN_LED, OUTPUT);
-  digitalWrite(LOCAL_PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
+
+  // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
+  digitalWrite(LOCAL_PIN_LED, LED_ON); 
 
   Serial.begin(115200);
-  while (!Serial);
+
+  while (!Serial && millis() < 5000);
 
 #if USE_ESP32_AT
   Serial.println("\nStart AutoConnect with ESP32-AT WiFi module on " + String(BOARD_NAME));
 #else
   Serial.println("\nStart AutoConnect with ESP8266-AT WiFi module on " + String(BOARD_NAME));
 #endif
-  
+
   Serial.println(ESP_AT_WIFIMANAGER_VERSION);
-  
+
   // initialize serial for ESP module
   EspSerial.begin(115200);
 
@@ -159,6 +165,7 @@ void setup()
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }

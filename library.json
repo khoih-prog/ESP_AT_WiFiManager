@@ -1,8 +1,8 @@
 {
   "name": "ESP_AT_WiFiManager",
   "version": "1.3.1",
-  "keywords": "wifi, wifi-manager, ESP8266-AT, ESP32-AT, AT-command, wifi-shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32, rpi-pico, rp2040, nano-rp2040-connect, Credentials, LittleFS, EEPROM, FlashStorage-SAMD, FlashStorage-STM32, DueFlashStorage",
-  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, RP2040-based RASPBERRY_PI_PICO, etc. boards using ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, FlashStorage_SAMD, FlashStorage_STM32, DueFlashStorage or nRF52/RP2040 LittleFS.",
+  "keywords": "wifi, wifi-manager, ESP8266-AT, ESP32-AT, WizFi360, AT-command, wifi-shield, nRF52, SAM DUE, SAMD21, SAMD51, STM32, rpi-pico, rp2040, nano-rp2040-connect, Credentials, LittleFS, EEPROM, FlashStorage-SAMD, FlashStorage-STM32, DueFlashStorage",
+  "description": "WiFi/Credentials Manager for nRF52, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, RP2040-based RASPBERRY_PI_PICO, etc. boards using WizFi360/ESP8266/ESP32-AT-command shields with fallback web configuration portal. Credentials are saved in EEPROM, FlashStorage_SAMD, FlashStorage_STM32, DueFlashStorage or nRF52/RP2040 LittleFS.",
   "authors":
   {
     "name":  "Khoi Hoang",
@@ -27,14 +27,14 @@
     {
       "owner": "khoih-prog",
       "name": "FlashStorage_STM32",
-      "version": ">=1.1.0",
-      "platforms": ["*"]
+      "version": ">=1.2.0",
+      "platforms": ["ststm32"]
     },
     {
       "owner": "khoih-prog",
       "name": "FlashStorage_SAMD",
-      "version": "^1.2.0",
-      "platforms": ["*"]
+      "version": "^1.3.2",
+      "platforms": ["atmelsam"]
     },
     {
       "owner": "sebnil",
@@ -45,7 +45,7 @@
     {
       "owner": "khoih-prog",
       "name": "ESP8266_AT_WebServer",
-      "version": "^1.4.0",
+      "version": "^1.7.1",
       "platforms": ["*"]
     }
   ],

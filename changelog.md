@@ -15,6 +15,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.4.0](#release-v140)
   * [Release v1.3.1](#release-v131)
   * [Major Release v1.3.0](#major-release-v130)
   * [Major Release v1.2.0](#major-release-v120)
@@ -27,6 +28,10 @@
 ---
 
 ## Changelog
+
+### Release v1.4.0
+
+1. Add support to WizNet `WizFi360`, such as `WIZNET_WIZFI360_EVB_PICO` using `arduino-pico` core
 
 ### Release v1.3.1
 

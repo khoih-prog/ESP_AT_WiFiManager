@@ -2,20 +2,16 @@
   ESP_AT_WiFiManager-impl.h
   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
 
-  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-
-  Inspired by:
-  http://www.esp8266.com/viewtopic.php?f=29&t=2520
-  https://github.com/chriscook8/esp-arduino-apboot
-  https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` 
+  shields to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
 
   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
   and from Ken Taylor https://github.com/kentaylor
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.3.1
+  
+  Version: 1.4.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -26,7 +22,8 @@
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
   1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
-  1.3.1   K Hoang      10/10/2021  Update `platform.ini` and `library.json`
+  1.3.1   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.4.0   K Hoang      28/05/2021 Add support to WizNet WizFi360 such as WIZNET_WIZFI360_EVB_PICO using arduino-pico core
  *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_impl_h
@@ -54,24 +51,21 @@ ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, 
 
 //////////////////////////////////////////////
 
-ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length,
-                                       const char *custom)
+ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom)
 {
   init(id, placeholder, defaultValue, length, custom, WFM_LABEL_BEFORE);
 }
 
 //////////////////////////////////////////////
 
-ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length,
-                                       const char *custom, int labelPlacement)
+ESP_AT_WMParameter::ESP_AT_WMParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement)
 {
   init(id, placeholder, defaultValue, length, custom, labelPlacement);
 }
 
 //////////////////////////////////////////////
 
-void ESP_AT_WMParameter::init(const char *id, const char *placeholder, const char *defaultValue, int length,
-                              const char *custom, int labelPlacement)
+void ESP_AT_WMParameter::init(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement)
 {
   _id = id;
   _placeholder = placeholder;
@@ -89,7 +83,6 @@ void ESP_AT_WMParameter::init(const char *id, const char *placeholder, const cha
       strncpy(_value, defaultValue, _length);
     }
   }
-
   _customHTML = custom;
 }
 
@@ -148,10 +141,10 @@ const char* ESP_AT_WMParameter::getCustomHTML()
 //////////////////////////////////////////////
 
 /**
-   [getParameters description]
-   @access public
-*/
-ESP_AT_WMParameter** ESP_AT_WiFiManager::getParameters()
+ * [getParameters description]
+ * @access public
+ */
+ESP_AT_WMParameter** ESP_AT_WiFiManager::getParameters() 
 {
   return _params;
 }
@@ -159,10 +152,10 @@ ESP_AT_WMParameter** ESP_AT_WiFiManager::getParameters()
 //////////////////////////////////////////////
 
 /**
-   [getParametersCount description]
-   @access public
-*/
-int ESP_AT_WiFiManager::getParametersCount()
+ * [getParametersCount description]
+ * @access public
+ */
+int ESP_AT_WiFiManager::getParametersCount() 
 {
   return _paramsCount;
 }
@@ -217,7 +210,7 @@ bool ESP_AT_WiFiManager::addParameter(ESP_AT_WMParameter *p)
   _params[_paramsCount] = p;
   _paramsCount++;
   DEBUG_WM2(F("Adding param "), p->getID());
-
+  
   return true;
 }
 
@@ -226,15 +219,13 @@ bool ESP_AT_WiFiManager::addParameter(ESP_AT_WMParameter *p)
 void ESP_AT_WiFiManager::setupConfigPortal()
 {
   stopConfigPortal = false; //Signal not to close config portal
-
-#if !USE_STATIC_WEBSERVER
-
+ 
+  #if !USE_STATIC_WEBSERVER 
   if (!server)
   {
     server = new ESP8266_AT_WebServer;
   }
-
-#endif
+  #endif
 
   _configPortalStart = millis();
 
@@ -250,7 +241,7 @@ void ESP_AT_WiFiManager::setupConfigPortal()
     }
     else
     {
-      DEBUG_WM2(F("AP PW: "), _apPassword);
+      DEBUG_WM2(F("AP PW: "),_apPassword);
     }
   }
 
@@ -260,9 +251,9 @@ void ESP_AT_WiFiManager::setupConfigPortal()
     DEBUG_WM2(F("Custom AP IP: "), _ap_static_ip);
     WiFi.configAP(_ap_static_ip);
   }
-
+ 
   if (_apPassword != NULL)
-  {
+  {   
     // Use AP_STA to scan WiFi
     WiFi.beginAP(_apName, _apChannel, _apPassword, ENC_TYPE_WPA2_PSK, false);
   }
@@ -275,65 +266,29 @@ void ESP_AT_WiFiManager::setupConfigPortal()
   DEBUG_WM2(F("AP IP: "), WiFi.localIP());
 
   /* Setup web pages: root, wifi config pages, SO captive portal detectors and not found. */
-#if USE_STATIC_WEBSERVER
-
-  server.on("/", [this]()
-  {
-    handleRoot();
-  });
-  server.on("/wifi", [this]()
-  {
-    handleWifi();
-  });
-  server.on("/wifisave", [this]()
-  {
-    handleWifiSave();
-  });
-  server.on("/close", [this]()
-  {
-    handleServerClose();
-  });
-  server.on("/i", [this]()
-  {
-    handleInfo();
-  });
-  server.onNotFound( [this]()
-  {
-    handleNotFound();
-  });
-
-  server.begin(); // Web server start
-
-#else
-
-  server->on("/", [this]()
-  {
-    handleRoot();
-  });
-  server->on("/wifi", [this]()
-  {
-    handleWifi();
-  });
-  server->on("/wifisave", [this]()
-  {
-    handleWifiSave();
-  });
-  server->on("/close", [this]()
-  {
-    handleServerClose();
-  });
-  server->on("/i", [this]()
-  {
-    handleInfo();
-  });
-  server->onNotFound( [this]()
-  {
-    handleNotFound();
-  });
-
-  server->begin(); // Web server start
-#endif
-
+  #if USE_STATIC_WEBSERVER 
+  
+    server.on("/", [this](){ handleRoot(); });
+    server.on("/wifi", [this](){ handleWifi(); });
+    server.on("/wifisave", [this](){ handleWifiSave(); });
+    server.on("/close", [this](){ handleServerClose(); });
+    server.on("/i", [this](){ handleInfo(); });
+    server.onNotFound( [this](){ handleNotFound(); });
+    
+    server.begin(); // Web server start
+  
+  #else
+   
+    server->on("/", [this](){ handleRoot(); });
+    server->on("/wifi", [this](){ handleWifi(); });
+    server->on("/wifisave", [this](){ handleWifiSave(); });
+    server->on("/close", [this](){ handleServerClose(); });
+    server->on("/i", [this](){ handleInfo(); });
+    server->onNotFound( [this](){ handleNotFound(); });
+    
+    server->begin(); // Web server start
+  #endif
+  
   DEBUG_WM2(F("HTTP server on channel "), _apChannel);
 
 }
@@ -350,10 +305,10 @@ bool ESP_AT_WiFiManager::autoConnect()
 //////////////////////////////////////////////
 
 /* This is not very useful as there has been an assumption that device has to be
-  told to connect but Wifi already does it's best to connect in background. Calling this
-  method will block until WiFi connects. Sketch can avoid
-  blocking call then use (WiFi.status()==WL_CONNECTED) test to see if connected yet.
-  See some discussion at https://github.com/tzapu/WiFiManager/issues/68
+told to connect but Wifi already does it's best to connect in background. Calling this
+method will block until WiFi connects. Sketch can avoid
+blocking call then use (WiFi.status()==WL_CONNECTED) test to see if connected yet.
+See some discussion at https://github.com/tzapu/WiFiManager/issues/68
 */
 bool ESP_AT_WiFiManager::autoConnect(char const *apName, char const *apPassword)
 {
@@ -384,7 +339,7 @@ bool  ESP_AT_WiFiManager::startConfigPortal()
   String ssid = "ESP_AT_ABCDEF";
 
   ssid.toUpperCase();
-
+  
   return startConfigPortal(ssid.c_str(), NULL);
 }
 
@@ -403,19 +358,21 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
   }
 
   connect = false;
-
+  
+  WiFi.reset();
+   
   setupConfigPortal();
 
   bool TimedOut = true;
-
+  
   while (_configPortalTimeout == 0 || millis() < _configPortalStart + _configPortalTimeout)
-  {
-#if USE_STATIC_WEBSERVER
+  {   
+    #if USE_STATIC_WEBSERVER
     server.handleClient();
-#else
+    #else
     server->handleClient();
-#endif
-
+    #endif
+    
     if (connect)
     {
       TimedOut = false;
@@ -436,7 +393,7 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
           //todo: check if any custom parameters actually exist, and check if they really changed maybe
           _savecallback();
         }
-
+        
         break;
       }
 
@@ -449,43 +406,43 @@ bool  ESP_AT_WiFiManager::startConfigPortal(char const *apName, char const *apPa
           //todo: check if any custom parameters actually exist, and check if they really changed maybe
           _savecallback();
         }
-
+        
         break;
       }
     }
 
     if (stopConfigPortal)
     {
-      DEBUG_WM(F("Stop ConfigPortal"));   //KH
+      DEBUG_WM(F("Stop ConfigPortal"));  	//KH
       stopConfigPortal = false;
       break;
     }
-
+    
     yield();
   }
 
   if (TimedOut)
   {
     WiFi.reset();
-
+    
     // check if we've got static_ip settings, if we do, use those.
     if (_sta_static_ip)
     {
       WiFi.config(_sta_static_ip);
       DEBUG_WM2(F("Static IP : "), _sta_static_ip);
     }
-
+    
     WiFi.begin(WiFi_SSID().c_str(), WiFi_Pass().c_str());
-
+    
     DEBUG_WM2(F("Timeout, connect result: "), getStatus(waitForConnectResult()));
   }
-
-#if USE_STATIC_WEBSERVER
-  server.stop();
-#else
-  server->stop();
-#endif
-
+ 
+  #if USE_STATIC_WEBSERVER 
+    server.stop();
+  #else
+    server->stop();
+  #endif
+  
   return  WiFi.status() == WL_CONNECTED;
 }
 
@@ -508,14 +465,14 @@ int ESP_AT_WiFiManager::connectWifi(String ssid, String pass)
 
     //TO DO, STA mode only
     WiFi.reset();
-
+    
     // check if we've got static_ip settings, if we do, use those.
     if (_sta_static_ip)
     {
       WiFi.config(_sta_static_ip);
       DEBUG_WM2(F("Static IP : "), _sta_static_ip);
     }
-
+    
     WiFi.begin(ssid.c_str(), pass.c_str());   // Start Wifi with new values.
   }
   else if (WiFi_SSID() == "")
@@ -547,7 +504,7 @@ uint8_t ESP_AT_WiFiManager::waitForConnectResult()
     while (keepConnecting)
     {
       status = WiFi.status();
-
+      
       if (millis() > start + _connectTimeout)
       {
         keepConnecting = false;
@@ -558,10 +515,10 @@ uint8_t ESP_AT_WiFiManager::waitForConnectResult()
       {
         keepConnecting = false;
       }
-
+      
       delay(100);
     }
-
+    
     return status;
   }
 }
@@ -574,20 +531,16 @@ const char* ESP_AT_WiFiManager::getStatus(int status)
 {
   switch (status)
   {
-    case WL_IDLE_STATUS:
-      return "WL_IDLE_STATUS";
-
-    case WL_CONNECTED:
-      return "WL_CONNECTED";
-
-    case WL_CONNECT_FAILED:
-      return "WL_CONNECT_FAILED";
-
-    case WL_DISCONNECTED:
-      return "WL_DISCONNECTED";
-
-    default:
-      return "UNKNOWN";
+  case WL_IDLE_STATUS:
+    return "WL_IDLE_STATUS";
+  case WL_CONNECTED:
+    return "WL_CONNECTED";
+  case WL_CONNECT_FAILED:
+    return "WL_CONNECT_FAILED";
+  case WL_DISCONNECTED:
+    return "WL_DISCONNECTED";
+  default:
+    return "UNKNOWN";
   }
 }
 
@@ -610,9 +563,9 @@ String ESP_AT_WiFiManager::getConfigPortalPW()
 void ESP_AT_WiFiManager::resetSettings()
 {
   DEBUG_WM(F("Data cleared"));
-
+  
   WiFi.disconnect();
-
+  
   delay(200);
   return;
 }
@@ -709,18 +662,18 @@ void ESP_AT_WiFiManager::handleRoot()
   DEBUG_WM(F("Handle root"));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
-  _configPortalTimeout = 0;   //KH
+  _configPortalTimeout = 0;		//KH 
 
-#if USE_STATIC_WEBSERVER
-  server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#else
-  server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#endif
-
+  #if USE_STATIC_WEBSERVER 
+    server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #else 
+    server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #endif
+  
   String page = (HTTP_HEAD_START);
   page.replace("{v}", "Options");
   page += (HTTP_SCRIPT);
@@ -748,17 +701,17 @@ void ESP_AT_WiFiManager::handleRoot()
   page += F("</h2>");
   page += (HTTP_PORTAL_OPTIONS);
   page += F("<div class=\"msg\">");
-
+  
   reportStatus(page);
 
   page += F("</div>");
   page += (HTTP_END);
-
-#if USE_STATIC_WEBSERVER
-  server.send(200, HTTP_HEAD_CT, page);
-#else
-  server->send(200, HTTP_HEAD_CT, page);
-#endif
+  
+  #if USE_STATIC_WEBSERVER 
+    server.send(200, HTTP_HEAD_CT, page);
+  #else
+   server->send(200, HTTP_HEAD_CT, page);
+  #endif
 
 }
 
@@ -770,19 +723,19 @@ void ESP_AT_WiFiManager::handleWifi()
   DEBUG_WM(F("Handle WiFi"));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
-  _configPortalTimeout = 0;   //KH
+  _configPortalTimeout = 0;		//KH 
 
-#if USE_STATIC_WEBSERVER
-  server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#else
-  server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#endif
-
-
+  #if USE_STATIC_WEBSERVER 
+    server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #else 
+    server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #endif
+  
+  
   String page = (HTTP_HEAD_START);
   page.replace("{v}", "Config ESP");
   page += (HTTP_SCRIPT);
@@ -803,7 +756,7 @@ void ESP_AT_WiFiManager::handleWifi()
     //display networks in page
     //Limit numberOfNetworks to 3 to reduce size
     numberOfNetworks = 3;
-
+    
     for (int i = 0; i < numberOfNetworks; i++)
     {
       if (networkIndices[i] == -1)
@@ -847,23 +800,20 @@ void ESP_AT_WiFiManager::handleWifi()
     }
 
     String pitem;
-
     switch (_params[i]->getLabelPlacement())
     {
-      case WFM_LABEL_BEFORE:
-        pitem = (HTTP_FORM_LABEL);
-        pitem += (HTTP_FORM_PARAM);
-        break;
-
-      case WFM_LABEL_AFTER:
-        pitem = (HTTP_FORM_PARAM);
-        pitem += (HTTP_FORM_LABEL);
-        break;
-
-      default:
-        // WFM_NO_LABEL
-        pitem = (HTTP_FORM_PARAM);
-        break;
+    case WFM_LABEL_BEFORE:
+      pitem = (HTTP_FORM_LABEL);
+      pitem += (HTTP_FORM_PARAM);
+      break;
+    case WFM_LABEL_AFTER:
+      pitem = (HTTP_FORM_PARAM);
+      pitem += (HTTP_FORM_LABEL);
+      break;
+    default:
+      // WFM_NO_LABEL
+      pitem = (HTTP_FORM_PARAM);
+      break;
     }
 
     if (_params[i]->getID() != NULL)
@@ -893,11 +843,11 @@ void ESP_AT_WiFiManager::handleWifi()
 
   page += (HTTP_END);
 
-#if USE_STATIC_WEBSERVER
+  #if USE_STATIC_WEBSERVER 
   server.send(200, HTTP_HEAD_CT, page);
-#else
+  #else
   server->send(200, HTTP_HEAD_CT, page);
-#endif
+  #endif
 
   DEBUG_WM(F("Sent config page"));
 }
@@ -910,33 +860,30 @@ void ESP_AT_WiFiManager::handleWifiSave()
   DEBUG_WM(F("WiFi save"));
 
   //SAVE/connect here
-
-#if USE_STATIC_WEBSERVER
-
+  
+  #if USE_STATIC_WEBSERVER 
   if (strlen(server.arg("s").c_str()) < sizeof(ESP_AT_WM_Config.wifi_ssid) - 1)
     strcpy(ESP_AT_WM_Config.wifi_ssid, server.arg("s").c_str());
   else
     strncpy(ESP_AT_WM_Config.wifi_ssid, server.arg("s").c_str(), sizeof(ESP_AT_WM_Config.wifi_ssid) - 1);
-
+    
   if (strlen(server.arg("p").c_str()) < sizeof(ESP_AT_WM_Config.wifi_pw) - 1)
     strcpy(ESP_AT_WM_Config.wifi_pw, server.arg("p").c_str());
   else
     strncpy(ESP_AT_WM_Config.wifi_pw, server.arg("p").c_str(), sizeof(ESP_AT_WM_Config.wifi_pw) - 1);
-
-#else
-
+  #else
+  
   if (strlen(server->arg("s").c_str()) < sizeof(ESP_AT_WM_Config.wifi_ssid) - 1)
     strcpy(ESP_AT_WM_Config.wifi_ssid, server->arg("s").c_str());
   else
     strncpy(ESP_AT_WM_Config.wifi_ssid, server->arg("s").c_str(), sizeof(ESP_AT_WM_Config.wifi_ssid) - 1);
-
+    
   if (strlen(server->arg("p").c_str()) < sizeof(ESP_AT_WM_Config.wifi_pw) - 1)
     strcpy(ESP_AT_WM_Config.wifi_pw, server->arg("p").c_str());
   else
     strncpy(ESP_AT_WM_Config.wifi_pw, server->arg("p").c_str(), sizeof(ESP_AT_WM_Config.wifi_pw) - 1);
-
-#endif
-
+  #endif 
+  
   //parameters
   for (int i = 0; i < _paramsCount; i++)
   {
@@ -946,34 +893,33 @@ void ESP_AT_WiFiManager::handleWifiSave()
     }
 
     //read parameter
-#if USE_STATIC_WEBSERVER
+    #if USE_STATIC_WEBSERVER
     String value = server.arg(_params[i]->getID()).c_str();
-#else
+    #else
     String value = server->arg(_params[i]->getID()).c_str();
-#endif
-
+    #endif
+    
     //store it in array
     value.toCharArray(_params[i]->_value, _params[i]->_length);
     DEBUG_WM4(F("Param:"), _params[i]->getID(), F(" / Value:"), value);
   }
 
-#if USE_STATIC_WEBSERVER
-
+  #if USE_STATIC_WEBSERVER
   if (server.arg("ip") != "")
-#else
+  #else
   if (server->arg("ip") != "")
-#endif
+  #endif
   {
     DEBUG_WM(F("static ip"));
-
-#if USE_STATIC_WEBSERVER
-    DEBUG_WM(server.arg("ip"));
-    String ip = server.arg("ip");
-#else
-    DEBUG_WM(server->arg("ip"));
-    String ip = server->arg("ip");
-#endif
-
+    
+    #if USE_STATIC_WEBSERVER
+      DEBUG_WM(server.arg("ip"));
+      String ip = server.arg("ip");
+    #else
+      DEBUG_WM(server->arg("ip"));
+      String ip = server->arg("ip");
+    #endif
+    
     optionalIPFromString(&_sta_static_ip, ip.c_str());
   }
 
@@ -987,21 +933,21 @@ void ESP_AT_WiFiManager::handleWifiSave()
   page.replace("{v}", _apName);
   page.replace("{x}", ESP_AT_WM_Config.wifi_ssid);
   page += (HTTP_END);
-
+  
   // Save to EEPROM
   saveConfigData();
 
-#if USE_STATIC_WEBSERVER
-  server.send(200, HTTP_HEAD_CT, page);
-#else
-  server->send(200, HTTP_HEAD_CT, page);
-#endif
+  #if USE_STATIC_WEBSERVER
+    server.send(200, HTTP_HEAD_CT, page);
+  #else
+    server->send(200, HTTP_HEAD_CT, page);
+  #endif
 
   DEBUG_WM(F("Sent wifisave page"));
 
   connect = true; //signal ready to connect/reset
 
-  // Restore when Press Save WiFi
+    // Restore when Press Save WiFi
   _configPortalTimeout = DEFAULT_PORTAL_TIMEOUT;
 }
 
@@ -1011,17 +957,17 @@ void ESP_AT_WiFiManager::handleWifiSave()
 void ESP_AT_WiFiManager::handleServerClose()
 {
   DEBUG_WM1(F("Server Close"));
-
-#if USE_STATIC_WEBSERVER
-  server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#else
-  server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#endif
-
+  
+  #if USE_STATIC_WEBSERVER 
+    server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #else 
+    server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #endif
+  
   String page = (HTTP_HEAD_START);
   page.replace("{v}", "Close Server");
   page += (HTTP_SCRIPT);
@@ -1032,9 +978,9 @@ void ESP_AT_WiFiManager::handleServerClose()
   page += F("SSID <b>");
   page += WiFi_SSID();
   page += F("</b><br>");
-
+  
   page += F("IP: <b>");
-
+  
   if (_sta_static_ip)
   {
     page += IPAddressToString(_sta_static_ip);
@@ -1043,18 +989,18 @@ void ESP_AT_WiFiManager::handleServerClose()
   {
     page += F("DHCP");
   }
-
+  
   page += F("</b><br><br>");
   page += F("Config Portal closed.<br><br>");
   page += (HTTP_END);
-
-#if USE_STATIC_WEBSERVER
+  
+  #if USE_STATIC_WEBSERVER
   server.send(200, HTTP_HEAD_CT, page);
-#else
+  #else
   server->send(200, HTTP_HEAD_CT, page);
-#endif
-
-  //stopConfigPortal = true; //signal ready to shutdown config portal   //KH crash if use this ???
+  #endif
+  
+  //stopConfigPortal = true; //signal ready to shutdown config portal		//KH crash if use this ???
   DEBUG_WM1(F("Sent server close page"));
 
   // Restore when Press Save WiFi
@@ -1069,18 +1015,18 @@ void ESP_AT_WiFiManager::handleInfo()
   DEBUG_WM(F("Info"));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
-  _configPortalTimeout = 0;   //KH
+  _configPortalTimeout = 0;		//KH 
 
-#if USE_STATIC_WEBSERVER
-  server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#else
-  server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-#endif
-
+  #if USE_STATIC_WEBSERVER 
+    server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #else 
+    server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+  #endif
+  
   String page = (HTTP_HEAD_START);
   page.replace("{v}", "Info");
   page += (HTTP_SCRIPT);
@@ -1097,15 +1043,15 @@ void ESP_AT_WiFiManager::handleInfo()
   char _macAddress[WL_MAC_ADDR_LENGTH + 1];
   WiFi.macAddress((uint8_t *) _macAddress);
   _macAddress[WL_MAC_ADDR_LENGTH] = 0;
-
-  String _macAdd = String(_macAddress[0], HEX) + ":" + String(_macAddress[1], HEX) + ":"
-                   + String(_macAddress[2], HEX) + ":" + String(_macAddress[3], HEX) + ":"
-                   + String(_macAddress[3], HEX) + ":" + String(_macAddress[5], HEX);
-
+     
+  String _macAdd = String(_macAddress[0], HEX) + ":" + String(_macAddress[1], HEX) + ":" 
+                 + String(_macAddress[2], HEX) + ":" + String(_macAddress[3], HEX) + ":" 
+                 + String(_macAddress[3], HEX) + ":" + String(_macAddress[5], HEX);
+                                  
   _macAdd.toUpperCase();
-
+  
   page += String( _macAdd );
-
+  
   page += F("<tr><td>AP IP</td><td>");
   page += IPAddressToString(WiFi.localIP());
   page += F("</td></tr>");
@@ -1125,11 +1071,11 @@ void ESP_AT_WiFiManager::handleInfo()
   page += F("<p/><a href=\"https://github.com/khoih-prog/ESP_AT_WiFiManager\">ESP_AT_WiFiManager</a>");
   page += (HTTP_END);
 
-#if USE_STATIC_WEBSERVER
-  server.send(200, HTTP_HEAD_CT, page);
-#else
-  server->send(200, HTTP_HEAD_CT, page);
-#endif
+  #if USE_STATIC_WEBSERVER
+    server.send(200, HTTP_HEAD_CT, page);
+  #else
+    server->send(200, HTTP_HEAD_CT, page);
+  #endif
 
   DEBUG_WM(F("Sent info page"));
 }
@@ -1139,44 +1085,44 @@ void ESP_AT_WiFiManager::handleInfo()
 void ESP_AT_WiFiManager::handleNotFound()
 {
   String message = "File Not Found\n\n";
+  
+  #if USE_STATIC_WEBSERVER
+    message += "URI: ";
+    message += server.uri();
+    message += "\nMethod: ";
+    message += (server.method() == HTTP_GET) ? "GET" : "POST";
+    message += "\nArguments: ";
+    message += server.args();
+    message += "\n";
 
-#if USE_STATIC_WEBSERVER
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
+    for (uint8_t i = 0; i < server.args(); i++)
+    {
+      message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+    }
+   
+    server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+    server.send(404, HTTP_HEAD_CT2, message);
+  #else
+    message += "URI: ";
+    message += server->uri();
+    message += "\nMethod: ";
+    message += (server.method() == HTTP_GET) ? "GET" : "POST";
+    message += "\nArguments: ";
+    message += server->args();
+    message += "\n";
 
-  for (uint8_t i = 0; i < server.args(); i++)
-  {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
+    for (uint8_t i = 0; i < server->args(); i++)
+    {
+      message += " " + server->argName(i) + ": " + server->arg(i) + "\n";
+    }
 
-  server.sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server.sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server.sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-  server.send(404, HTTP_HEAD_CT2, message);
-#else
-  message += "URI: ";
-  message += server->uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += server->args();
-  message += "\n";
-
-  for (uint8_t i = 0; i < server->args(); i++)
-  {
-    message += " " + server->argName(i) + ": " + server->arg(i) + "\n";
-  }
-
-  server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
-  server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
-  server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
-  server->send(404, HTTP_HEAD_CT2, message);
-#endif
+    server->sendHeader(HTTP_HEAD_CC, HTTP_HEAD_NCNSMR);
+    server->sendHeader(HTTP_HEAD_PRAGMA, HTTP_HEAD_NOCACHE);
+    server->sendHeader(HTTP_HEAD_EXPIRE, HTTP_HEAD_M_ONE);
+    server->send(404, HTTP_HEAD_CT2, message);
+  #endif
 }
 
 //////////////////////////////////////////////
@@ -1198,8 +1144,7 @@ void ESP_AT_WiFiManager::setSaveConfigCallback(void(*func)())
 //////////////////////////////////////////////
 
 //sets a custom element to add to head, like a new style tag
-void ESP_AT_WiFiManager::setCustomHeadElement(const char* element)
-{
+void ESP_AT_WiFiManager::setCustomHeadElement(const char* element) {
   _customHeadElement = element;
 }
 
@@ -1231,7 +1176,7 @@ int ESP_AT_WiFiManager::scanWifiNetworks(int **indicesptr)
   if (n <= 0)
   {
     DEBUG_WM(F("None found"));
-    return (0);
+    return(0);
   }
   else
   {
@@ -1243,7 +1188,7 @@ int ESP_AT_WiFiManager::scanWifiNetworks(int **indicesptr)
     {
       DEBUG_WM(F("ERROR: Out of memory"));
       *indicesptr = NULL;
-      return (0);
+      return(0);
     }
 
     *indicesptr = indices;
@@ -1272,14 +1217,12 @@ int ESP_AT_WiFiManager::scanWifiNetworks(int **indicesptr)
     if (_removeDuplicateAPs)
     {
       String cssid;
-
       for (int i = 0; i < n; i++)
       {
         if (indices[i] == -1)
           continue;
 
         cssid = WiFi.SSID(indices[i]);
-
         for (int j = i + 1; j < n; j++)
         {
           if (cssid == WiFi.SSID(indices[j]))
@@ -1357,7 +1300,7 @@ bool ESP_AT_WiFiManager::isIp(String str)
       return false;
     }
   }
-
+  
   return true;
 }
 
@@ -1367,7 +1310,7 @@ bool ESP_AT_WiFiManager::isIp(String str)
 String ESP_AT_WiFiManager::toStringIp(IPAddress ip)
 {
   String res = "";
-
+  
   for (int i = 0; i < 3; i++)
   {
     res += String((ip >> (8 * i)) & 0xFF) + ".";
@@ -1383,7 +1326,7 @@ String ESP_AT_WiFiManager::toStringIp(IPAddress ip)
 void ESP_AT_WiFiManager::displayConfigData()
 {
   DEBUG_WM6(F("Header = "), ESP_AT_WM_Config.header, F(", SSID = "), ESP_AT_WM_Config.wifi_ssid,
-            F(", PW = "),   ESP_AT_WM_Config.wifi_pw);
+             F(", PW = "),   ESP_AT_WM_Config.wifi_pw);
   DEBUG_WM2(F("Host Name = "), ESP_AT_WM_Config.host_name);
 }
 
@@ -1392,7 +1335,7 @@ void ESP_AT_WiFiManager::displayConfigData()
 int ESP_AT_WiFiManager::calcChecksum()
 {
   int checkSum = 0;
-
+  
   for (uint16_t index = 0; index < (sizeof(ESP_AT_WM_Config) - sizeof(ESP_AT_WM_Config.checkSum)); index++)
   {
     checkSum += * ( ( (byte*) &ESP_AT_WM_Config ) + index);
@@ -1402,7 +1345,7 @@ int ESP_AT_WiFiManager::calcChecksum()
 }
 
 //////////////////////////////////////////////
-
+    
 bool ESP_AT_WiFiManager::isWiFiConfigValid()
 {
   // If PWD length < 8 (as required by standard) => invalid set
@@ -1411,14 +1354,16 @@ bool ESP_AT_WiFiManager::isWiFiConfigValid()
   {
     // If SSID, PW = NULL or len < 8, set the flag
     DEBUG_WM2(F("Invalid Stored Config Data : WiFi PWD len < 8. PWD = "), ESP_AT_WM_Config.wifi_pw);
-
+       
     hadConfigData = false;
-
+    
     return false;
   }
-
+  
   return true;
 }
+
+//////////////////////////////////////////////
 
 #endif    //ESP_AT_WiFiManager-impl_h
 

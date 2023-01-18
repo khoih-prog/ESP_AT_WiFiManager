@@ -2,20 +2,16 @@
   ESP_AT_WiFiManager-impl_RPi_Pico.h
   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
 
-  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-  (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-
-  Inspired by:
-  http://www.esp8266.com/viewtopic.php?f=29&t=2520
-  https://github.com/chriscook8/esp-arduino-apboot
-  https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
+  ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` 
+  shields to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
 
   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
   and from Ken Taylor https://github.com/kentaylor
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
-  Version: 1.3.1
+  
+  Version: 1.4.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -26,13 +22,18 @@
   1.1.0   K Hoang      27/04/2021 Use new FlashStorage_STM32 library. Add support to new STM32 core v2.0.0 and STM32L5
   1.2.0   K Hoang      12/05/2021 Add support to RASPBERRY_PI_PICO using Arduino-pico core
   1.3.0   K Hoang      28/05/2021 Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using RP2040 Arduino mbed core
-  1.3.1   K Hoang      10/10/2021  Update `platform.ini` and `library.json`
+  1.3.1   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.4.0   K Hoang      28/05/2021 Add support to WizNet WizFi360 such as WIZNET_WIZFI360_EVB_PICO using arduino-pico core
  *********************************************************************************************************************************/
 
 #ifndef ESP_AT_WiFiManager_impl_RPi_Pico_h
 #define ESP_AT_WiFiManager_impl_RPi_Pico_h
 
+//////////////////////////////////////////////
+
 #define DEFAULT_HOST_NAME     "RP2040"
+
+//////////////////////////////////////////////
 
 //Use LittleFS for RPI Pico
 #include <FS.h>
@@ -40,12 +41,16 @@
 
 FS* filesystem =      &LittleFS;
 #define FileFS        LittleFS
-#warning Using LittleFS in ESP_AT_WiFiManager-impl_RPi_Pico.h
+
+#if (DEBUG_WIFIMGR)
+  #warning Using LittleFS in ESP_AT_WiFiManager-impl_RPi_Pico.h
+#endif
 
 // Use LittleFS/InternalFS for nRF52
 #define  CONFIG_FILENAME              ("/wm_config.dat")
 #define  CONFIG_FILENAME_BACKUP       ("/wm_config.bak")
 
+#if 0
 typedef struct
 {
   uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
@@ -59,52 +64,49 @@ typedef struct
   uint32_t SHCSR;                  /*!< Offset: 0x024 (R/W)  System Handler Control and State Register */
 } SCB_Type;
 
-void NVIC_SystemReset()
-{
-  /* SCB Application Interrupt and Reset Control Register Definitions */
-#define SCB_AIRCR_VECTKEY_Pos              16U                                      /*!< SCB AIRCR: VECTKEY Position */
-#define SCB_AIRCR_VECTKEY_Msk              (0xFFFFUL << SCB_AIRCR_VECTKEY_Pos)      /*!< SCB AIRCR: VECTKEY Mask */
+#endif
 
-#define SCB_AIRCR_SYSRESETREQ_Pos           2U                                      /*!< SCB AIRCR: SYSRESETREQ Position */
-#define SCB_AIRCR_SYSRESETREQ_Msk          (1UL << SCB_AIRCR_SYSRESETREQ_Pos)       /*!< SCB AIRCR: SYSRESETREQ Mask */
+//////////////////////////////////////////////
 
-#define SCS_BASE            (0xE000E000UL)                            /*!< System Control Space Base Address */
-#define SysTick_BASE        (SCS_BASE +  0x0010UL)                    /*!< SysTick Base Address */
-#define NVIC_BASE           (SCS_BASE +  0x0100UL)                    /*!< NVIC Base Address */
-#define SCB_BASE            (SCS_BASE +  0x0D00UL)                    /*!< System Control Block Base Address */
-
-#define SCB                 ((SCB_Type       *)     SCB_BASE      )   /*!< SCB configuration struct */
-#define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick configuration struct */
-#define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struct */
-
-
-  SCB->AIRCR  = ((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) | SCB_AIRCR_SYSRESETREQ_Msk);
-
-  while (true);
+void ESP_AT_NVIC_SystemReset()
+{                   
+#define AIRCR_Register (*((volatile uint32_t*)(PPB_BASE + 0x0ED0C)))
+  AIRCR_Register = 0x5FA0004;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::resetBoard()
 {
   delay(1000);
   // Restart for RPI Pico
   // AIRCR.SYSRESETREQ: Writing 1 to this bit causes the SYSRESETREQ
-  NVIC_SystemReset();
+  //NVIC_SystemReset();
+  DEBUG_WM1(F("resetBoard"));
+  
+  ESP_AT_NVIC_SystemReset();
+  
+  delay(10000);
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::clearConfigData()
 {
   memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
-
+  
   saveConfigData();
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::loadConfigData()
 {
   DEBUG_WM1(F("LoadCfgFile "));
-
+  
   // file existed
-  File file = FileFS.open(CONFIG_FILENAME, "r");
-
+  File file = FileFS.open(CONFIG_FILENAME, "r");    
+    
   if (!file)
   {
     DEBUG_WM1(F("failed"));
@@ -119,7 +121,7 @@ void ESP_AT_WiFiManager::loadConfigData()
       return;
     }
   }
-
+ 
   file.seek(0);
   //file.read((char *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
   file.read((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
@@ -128,20 +130,22 @@ void ESP_AT_WiFiManager::loadConfigData()
   file.close();
 }
 
+//////////////////////////////////////////////
+
 bool ESP_AT_WiFiManager::getConfigData()
 {
   hadConfigData = false;
-
+  
   // Initialize Internal File System
   if (!FileFS.begin())
   {
     DEBUG_WM1(F("LittleFS failed"));
     return false;
   }
-
+  
   // if config file exists, load
   loadConfigData();
-
+  
   int calChecksum = calcChecksum();
 
   DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(ESP_AT_WM_Config.checkSum, HEX));
@@ -152,7 +156,7 @@ bool ESP_AT_WiFiManager::getConfigData()
   {
     // Including Credentials CSum
     DEBUG_WM2(F("InitCfgFile,sz="), sizeof(ESP_AT_WM_Config));
-
+        
     memset(&ESP_AT_WM_Config, 0, sizeof(ESP_AT_WM_Config));
 
     // doesn't have any configuration
@@ -178,7 +182,7 @@ bool ESP_AT_WiFiManager::getConfigData()
     DEBUG_WM1(F("======= Start Stored Config Data ======="));
     displayConfigData();
   }
-
+  
   // If "blank" or NULL, set false flag and exit
   if (!isWiFiConfigValid())
   {
@@ -186,9 +190,11 @@ bool ESP_AT_WiFiManager::getConfigData()
   }
 
   hadConfigData = true;
-
+  
   return true;
 }
+
+//////////////////////////////////////////////
 
 void ESP_AT_WiFiManager::saveConfigData()
 {
@@ -196,7 +202,7 @@ void ESP_AT_WiFiManager::saveConfigData()
 
   int calChecksum = calcChecksum();
   ESP_AT_WM_Config.checkSum = calChecksum;
-
+  
   DEBUG_WM2(F("WCSum=0x"), String(calChecksum, HEX));
 
   File file = FileFS.open(CONFIG_FILENAME, "w");
@@ -205,7 +211,7 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t*) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-
+    
     file.close();
     DEBUG_WM1(F("OK"));
   }
@@ -223,14 +229,16 @@ void ESP_AT_WiFiManager::saveConfigData()
   {
     file.seek(0);
     file.write((uint8_t *) &ESP_AT_WM_Config, sizeof(ESP_AT_WM_Config));
-
+    
     file.close();
     DEBUG_WM1(F("OK"));
   }
   else
   {
     DEBUG_WM1(F("failed"));
-  }
+  } 
 }
 
+//////////////////////////////////////////////
+ 
 #endif      //ESP_AT_WiFiManager_impl_RPi_Pico_h

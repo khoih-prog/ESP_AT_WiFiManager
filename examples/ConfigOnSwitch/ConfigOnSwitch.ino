@@ -1,16 +1,16 @@
-  /****************************************************************************************************************************
+/****************************************************************************************************************************
   ConfigOnSwitch.ino
   WiFi/Credentials Manager for SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
-  
+
   ESP_AT_WiFiManager is a library for the Teensy, SAM DUE, SAMD, nRF52, STM32F/L/H/G/WB/MP1, etc. boards running `ESP8266/ESP32-AT-command` shields
   (https://github.com/esp8266/Arduino) to enable easy configuration and reconfiguration of WiFi, etc. credentials using a Captive Portal
-  
+
   Based on and modified from Tzapu https://github.com/tzapu/WiFiManager
   and from Ken Taylor https://github.com/kentaylor
-  
+
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_AT_WiFiManager
   Licensed under MIT license
- *****************************************************************************************************************************/
+*****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when no WiFi configuration has been previously entered or when a button is pushed.
    It is the easiest scenario for configuration but requires a pin and a button on the device.
@@ -49,7 +49,7 @@
    Flash button is convenient to use but if it is pressed it will stuff up the serial port device driver
    until the computer is rebooted on windows machines.
 */
-const int TRIGGER_PIN = 22;   // Change the PIN to whatever you'd like
+const int TRIGGER_PIN = 16;    //22;   // Change the PIN to whatever you'd like
 /*
    Alternative trigger pin. Needs to be connected to a button to use this pin. It must be a momentary connection
    not connected permanently to ground. Either trigger pin will work.
@@ -84,6 +84,7 @@ void check_status()
   static unsigned long checkstatus_timeout = 0;
 
 #define HEARTBEAT_INTERVAL    10000L
+
   // Print hearbeat every HEARTBEAT_INTERVAL (10) seconds.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
@@ -101,6 +102,8 @@ void enterConfigPortal()
 
   ESP_AT_wiFiManager.setMinimumSignalQuality(-1);
 
+  // 0 for random channel
+  //ESP_AT_wiFiManager.setAPChannel(0);
   ESP_AT_wiFiManager.setAPChannel(1);
 
   // Default AP IP is 192.168.4.1. Uncomment to use different AP IP
@@ -117,14 +120,14 @@ void enterConfigPortal()
   Router_Pass = ESP_AT_wiFiManager.WiFi_Pass();
 
   if ( !forcedConfig && (Router_SSID != "") && ESP_AT_wiFiManager.isWiFiConfigValid() )
-  {    
+  {
     if (ESP_AT_wiFiManager.connectWifi(Router_SSID, Router_Pass) == WL_CONNECTED)
     {
       Serial.println(F("Got stored Credentials. Try to connect first"));
-            
+
       return;
     }
-    
+
     ESP_AT_wiFiManager.setConfigPortalTimeout(60); //If no access point name has been previously entered disable timeout.
     Serial.println(F("Got stored Credentials but can't connect. Timeout 60s"));
   }
@@ -132,7 +135,7 @@ void enterConfigPortal()
     Serial.println(F("Forced CP, No stored or not valid Credentials. No timeout"));
 
   forcedConfig = false;
-  
+
   // SSID to uppercase
   ssid.toUpperCase();
 
@@ -148,7 +151,7 @@ void enterConfigPortal()
 
   digitalWrite(LOCAL_PIN_LED, LED_OFF); // Turn led off as we exit Config Portal
 
-  //ESP_AT_wiFiManager.resetBoard();
+  ESP_AT_wiFiManager.resetBoard();
 }
 
 void setup()
@@ -158,10 +161,13 @@ void setup()
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
   pinMode(TRIGGER_PIN2, INPUT_PULLUP);
   pinMode(LOCAL_PIN_LED, OUTPUT);
-  digitalWrite(LOCAL_PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
+
+  // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
+  digitalWrite(LOCAL_PIN_LED, LED_ON); 
 
   Serial.begin(115200);
-  while (!Serial);
+
+  while (!Serial && millis() < 5000);
 
   unsigned long startedAt = millis();
 
@@ -172,7 +178,7 @@ void setup()
 #endif
 
   Serial.println(ESP_AT_WIFIMANAGER_VERSION);
-  
+
   // initialize serial for ESP module
   EspSerial.begin(115200);
 
@@ -183,6 +189,7 @@ void setup()
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
@@ -200,6 +207,7 @@ void setup()
   while ( (WiFi.status() != WL_CONNECTED) && (millis() - startedAt < WIFI_CONNECT_TIMEOUT ) )
   {
     int i = 0;
+
     while ((!WiFi.status() || WiFi.status() >= WL_DISCONNECTED) && i++ < WHILE_LOOP_STEPS)
     {
       delay(WHILE_LOOP_DELAY);
@@ -224,7 +232,7 @@ void loop()
   {
     Serial.println("\nConfig Portal requested.");
     forcedConfig = true;
-    
+
     enterConfigPortal();
   }
 
